@@ -1,9 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import { adminAuth } from './firebase-admin';
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -31,8 +30,10 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// 延遲載入 Firebase Admin，確保環境變數已設定
 app.post('/api/auth/verify', async (req, res) => {
   try {
+    const { adminAuth } = await import('./firebase-admin');
     const { token } = req.body;
     const decodedToken = await adminAuth.verifyIdToken(token);
     res.json({ 
@@ -47,5 +48,5 @@ app.post('/api/auth/verify', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🔥 Firebase Admin initialized`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
