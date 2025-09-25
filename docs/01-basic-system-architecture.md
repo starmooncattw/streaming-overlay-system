@@ -6,10 +6,10 @@
 
 ### 📋 **必要條件**
 - [ ] **依賴文檔**: 00-專案總覽 (建議先閱讀)
-- [ ] **必要工具**: Node.js 18+、Git、瀏覽器、程式碼編輯器
-- [ ] **帳號需求**: Google 帳號、GitHub 帳號
-- [ ] **技能需求**: 🟢 簡單 - 基礎 JavaScript 和命令列操作
-- [ ] **預估時間**: ⏱️ 2-3 週 (每日 2-4 小時)
+- [ ] **必要工具**: 瀏覽器 (存取 GCP Cloud Shell)、網路連接
+- [ ] **帳號需求**: Google 帳號 (含 GCP 存取權限)、GitHub 帳號
+- [ ] **技能需求**: 🟢 簡單 - 基礎 JavaScript 概念和雲端操作
+- [ ] **預估時間**: ⏱️ 1-2 週 (AI 協作模式，每日 1-2 小時)
 
 ### 🎯 **完成後可獲得**
 - ✅ 完整的使用者認證系統 (Google OAuth)
@@ -32,82 +32,125 @@
 
 ## 🔧 詳細執行步驟
 
-### 🚨 第一步：開發環境設定
-**位置**: 本地開發環境
-**目標**: 建立完整的開發環境和工具鏈
+### 🚨 第一步：Cloud Shell 環境準備
+**位置**: GCP Cloud Shell Editor
+**目標**: 設定雲端開發環境和 AI 協作工作流程
 **🎯 用戶情境**: 🟢 BEGINNER | 🟡 INTERMEDIATE | 🔴 ADVANCED
 
-#### 💻 1.1 安裝 Node.js 和 npm
+#### 💻 1.1 存取 GCP Cloud Shell
 ```bash
-# 📋 CHECKLIST - 安裝 Node.js 18+
-# 前往 https://nodejs.org/ 下載 LTS 版本
-# 或使用 nvm (推薦)
+# 📋 CHECKLIST - 存取 Cloud Shell 環境
+# 1. 前往 https://shell.cloud.google.com
+# 2. 使用您的 Google 帳號登入
+# 3. 等待 Cloud Shell 環境啟動 (約 30-60 秒)
 
-# Windows (使用 Chocolatey)
-choco install nodejs
-
-# macOS (使用 Homebrew)
-brew install node
-
-# 驗證安裝
+# 驗證預裝工具
 node --version
 npm --version
+git --version
+gcloud --version
 ```
 
 **🔍 驗證方法**：
 ```bash
-# 💻 COMMAND - 檢查版本
-node --version
-npm --version
-# 預期結果：Node.js v18.x.x 或更高版本，npm v9.x.x 或更高版本
+# 💻 COMMAND - 檢查預裝工具版本
+node --version && npm --version && git --version
+# 預期結果：
+# Node.js v18.x.x 或更高版本
+# npm v9.x.x 或更高版本  
+# git version 2.x.x
 ```
 
 **⚠️ 常見問題**：
-- **問題**: Windows 上 npm 權限錯誤
-- **🟢 BEGINNER 解決方案**: 以系統管理員身分執行命令提示字元
-- **🟡 INTERMEDIATE 解決方案**: 設定 npm 全域安裝路徑 `npm config set prefix ~/.npm-global`
+- **問題**: Cloud Shell 啟動緩慢
+- **🟢 BEGINNER 解決方案**: 耐心等待，首次啟動需要較長時間
+- **🟡 INTERMEDIATE 解決方案**: 檢查網路連接，重新整理頁面
+- **🔴 ADVANCED 解決方案**: 檢查 GCP 專案權限設定
 
-#### 💻 1.2 安裝 Git 版本控制
+#### 💻 1.2 設定 GitHub 整合
 ```bash
-# 📋 CHECKLIST - 安裝 Git
-# 前往 https://git-scm.com/ 下載安裝
-
-# 設定 Git 使用者資訊
+# 📋 CHECKLIST - 設定 Git 使用者資訊
 git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"
+
+# 設定 GitHub 認證 (選擇其中一種方式)
+# 方式 1: 使用 Personal Access Token (推薦)
+# 前往 GitHub Settings > Developer settings > Personal access tokens
+# 生成 token 並在 git clone 時使用
+
+# 方式 2: 設定 SSH Key (進階用戶)
+ssh-keygen -t ed25519 -C "your.email@example.com"
+cat ~/.ssh/id_ed25519.pub
+# 複製公鑰到 GitHub Settings > SSH and GPG keys
 ```
 
 **🔍 驗證方法**：
 ```bash
-# 💻 COMMAND - 檢查 Git 設定
-git --version
-git config --list
-# 預期結果：顯示 Git 版本和使用者設定
+# 💻 COMMAND - 檢查 Git 設定和 GitHub 連接
+git config --list | grep user
+ssh -T git@github.com  # 如果使用 SSH
+# 預期結果：顯示使用者設定，SSH 測試成功
 ```
 
-#### 💻 1.3 建立專案目錄結構
+#### 💻 1.3 Clone 專案並設定 AI 協作環境
 ```bash
-# 📋 CHECKLIST - 建立專案根目錄
-mkdir streaming-overlay-system
+# 📋 CHECKLIST - Clone GitHub 專案
+# 使用您的 GitHub 專案 URL
+git clone https://github.com/starmooncattw/streaming-overlay-system.git
 cd streaming-overlay-system
 
-# 建立標準目錄結構
-mkdir frontend backend
-mkdir docs tests deployment
+# 檢查專案結構
+ls -la
 
-# 初始化 Git 儲存庫
-git init
+# 安裝 Firebase CLI (Cloud Shell 預裝，但確認版本)
+firebase --version
+
+# 登入 Firebase (如果尚未登入)
+firebase login --no-localhost
 ```
 
 **🔍 驗證方法**：
 ```bash
-# 💻 COMMAND - 檢查目錄結構
-ls -la
-# 預期結果：看到 frontend/, backend/, docs/, tests/, deployment/ 目錄
+# 💻 COMMAND - 檢查專案和工具狀態
+pwd && ls -la docs/
+firebase projects:list
+# 預期結果：在專案目錄中，看到 docs/ 資料夾，Firebase 已登入
+```
+
+**⚠️ 常見問題**：
+- **問題**: GitHub clone 失敗
+- **🟢 BEGINNER 解決方案**: 檢查網路連接，確認 GitHub URL 正確
+- **🟡 INTERMEDIATE 解決方案**: 使用 Personal Access Token 進行認證
+- **🔴 ADVANCED 解決方案**: 檢查 SSH Key 配置或使用 HTTPS clone
+
+#### 💡 1.4 設定 AI 協作工作流程
+```bash
+# 📋 CHECKLIST - AI 協作模式說明
+# 此步驟為概念說明，無需執行命令
+
+# AI 協作流程：
+# 1. 您在此文檔中提出需求
+# 2. AI 生成完整的程式碼
+# 3. AI 建立 GitHub Pull Request 或直接推送
+# 4. 您在 Cloud Shell 中 git pull 獲取最新程式碼
+# 5. 執行 AI 提供的測試和部署指令
+# 6. 提供回饋給 AI 進行調整
+
+# 建立開發分支 (可選，用於測試)
+git checkout -b development
+git push -u origin development
+```
+
+**🔍 驗證方法**：
+```bash
+# 💻 COMMAND - 檢查分支狀態
+git branch -a
+git status
+# 預期結果：顯示當前分支，工作目錄乾淨
 ```
 
 ### 🚨 第二步：Firebase 專案設定
-**位置**: Firebase Console + 本地環境
+**位置**: Firebase Console + GCP Cloud Shell
 **目標**: 建立 Firebase 專案並設定認證服務
 **🎯 用戶情境**: 🟢 BEGINNER | 🟡 INTERMEDIATE
 
@@ -148,33 +191,36 @@ ls -la
 - Firestore 顯示「測試模式」資料庫
 - Hosting 顯示準備就緒狀態
 
-#### 💻 2.3 安裝 Firebase CLI
+#### 💻 2.3 初始化 Firebase 專案配置
 ```bash
-# 📋 CHECKLIST - 安裝 Firebase 命令列工具
-npm install -g firebase-tools
+# 📋 CHECKLIST - Firebase CLI 已預裝在 Cloud Shell
+# 確認 Firebase CLI 版本
+firebase --version
 
-# 登入 Firebase
-firebase login
+# 如果尚未登入，執行登入 (使用無瀏覽器模式)
+firebase login --no-localhost
 
-# 初始化 Firebase 專案
+# 初始化 Firebase 專案配置
 firebase init
+# 選擇：Hosting, Firestore, Functions (使用空格選擇)
+# 選擇現有專案：streaming-overlay-system
 ```
 
 **🔍 驗證方法**：
 ```bash
-# 💻 COMMAND - 檢查 Firebase CLI
-firebase --version
+# 💻 COMMAND - 檢查 Firebase 配置
 firebase projects:list
-# 預期結果：顯示 Firebase CLI 版本和專案列表
+ls -la | grep firebase
+# 預期結果：顯示專案列表，看到 firebase.json 和 .firebaserc 文件
 ```
 
 **⚠️ 常見問題**：
-- **問題**: `firebase login` 無法開啟瀏覽器
-- **🟢 BEGINNER 解決方案**: 使用 `firebase login --no-localhost`
-- **🟡 INTERMEDIATE 解決方案**: 檢查防火牆設定或使用 `firebase login --reauth`
+- **問題**: 無法找到專案
+- **🟢 BEGINNER 解決方案**: 確認在 Firebase Console 中專案已建立完成
+- **🟡 INTERMEDIATE 解決方案**: 使用 `firebase use --add` 手動添加專案
 
 ### 🚨 第三步：前端基礎架構建立
-**位置**: frontend/ 目錄
+**位置**: GCP Cloud Shell - frontend/ 目錄
 **目標**: 建立 React + TypeScript 前端應用
 **🎯 用戶情境**: 🟢 BEGINNER | 🟡 INTERMEDIATE | 🔴 ADVANCED
 
@@ -278,7 +324,7 @@ npm run dev
 ```
 
 ### 🚨 第四步：Firebase 整合設定
-**位置**: frontend/src/ 目錄
+**位置**: GCP Cloud Shell - frontend/src/ 目錄
 **目標**: 整合 Firebase 認證和資料庫服務
 **🎯 用戶情境**: 🟡 INTERMEDIATE | 🔴 ADVANCED
 
@@ -398,7 +444,7 @@ console.log('Auth service loaded successfully');
 ```
 
 ### 🚨 第五步：使用者介面建立
-**位置**: frontend/src/ 目錄
+**位置**: GCP Cloud Shell - frontend/src/ 目錄
 **目標**: 建立登入頁面和主控台介面
 **🎯 用戶情境**: 🟢 BEGINNER | 🟡 INTERMEDIATE
 
@@ -584,7 +630,7 @@ export const Dashboard: React.FC = () => {
 ```
 
 ### 🚨 第六步：樣式管理系統
-**位置**: frontend/src/ 目錄
+**位置**: GCP Cloud Shell - frontend/src/ 目錄
 **目標**: 建立聊天室樣式的 CRUD 功能
 **🎯 用戶情境**: 🟡 INTERMEDIATE | 🔴 ADVANCED
 
@@ -798,7 +844,7 @@ console.log('Style service loaded successfully');
 ```
 
 ### 🚨 第七步：OBS 顯示頁面
-**位置**: frontend/src/ 目錄
+**位置**: GCP Cloud Shell - frontend/src/ 目錄
 **目標**: 建立透明背景的聊天室顯示頁面
 **🎯 用戶情境**: 🟡 INTERMEDIATE | 🔴 ADVANCED
 
@@ -921,7 +967,7 @@ export const DisplayPage: React.FC = () => {
 ```
 
 ### 🚨 第八步：路由設定和整合
-**位置**: frontend/src/ 目錄
+**位置**: GCP Cloud Shell - frontend/src/ 目錄
 **目標**: 設定完整的路由系統
 **🎯 用戶情境**: 🟢 BEGINNER | 🟡 INTERMEDIATE
 
@@ -1021,6 +1067,25 @@ npm run dev
 2. **忽略錯誤處理** - 必須提供完整的錯誤處理和故障排除指導
 3. **配置不完整** - Firebase 配置、TypeScript 設定等必須完整正確
 4. **忽視用戶技能差異** - 根據用戶回饋調整說明詳細程度
+5. **假設本地環境** - 所有指令都應該在 GCP Cloud Shell 中執行
+6. **忽略 AI 協作優勢** - 充分利用 AI 生成程式碼，用戶專注於測試和回饋
+
+### 🌟 **全雲端開發優勢**
+```markdown
+✅ AI + Cloud Shell 協作模式優勢：
+- 零環境配置：無需本機安裝任何開發工具
+- 跨設備開發：任何有瀏覽器的設備都能開發
+- AI 程式碼生成：100% 由 AI 撰寫，確保品質一致
+- 即時部署：直接整合 GCP 服務，部署速度最快
+- 成本控制：免費額度內運行，適合個人和小團隊
+
+🎯 協作流程最佳實務：
+1. 用戶在 Cloud Shell 中執行 AI 提供的指令
+2. AI 負責生成所有程式碼文件
+3. 用戶專注於測試功能和提供回饋
+4. AI 根據回饋快速調整和優化
+5. 持續迭代直到滿足需求
+```
 
 ### 🔄 **分段策略**
 - **開發環境設定** → 確保工具鏈完整可用
