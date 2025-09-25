@@ -1,0 +1,56 @@
+{
+  "name": "streaming-overlay-system",
+  "version": "1.0.0",
+  "description": "Complete Streaming Overlay System with YouTube, Twitch integration and donation tracking",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --prefix frontend && npm install --prefix backend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:frontend": "cd frontend && npm start",
+    "start:backend": "cd backend && npm start",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test -- --watchAll=false",
+    "test:backend": "cd backend && npm test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules frontend/build backend/dist",
+    "deploy:gcp": "gcloud app deploy",
+    "logs:gcp": "gcloud app logs tail -s default"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/user/streaming-overlay-system.git"
+  },
+  "keywords": [
+    "streaming",
+    "overlay",
+    "youtube",
+    "twitch",
+    "donation",
+    "realtime",
+    "websocket",
+    "react",
+    "nodejs",
+    "firebase"
+  ],
+  "author": "Streaming Overlay System Team",
+  "license": "MIT"
+}

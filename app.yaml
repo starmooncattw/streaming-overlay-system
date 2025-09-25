@@ -1,0 +1,68 @@
+# Google Cloud App Engine 配置文件
+runtime: nodejs18
+
+# 環境變數配置
+env_variables:
+  NODE_ENV: production
+  PORT: 8080
+
+# 自動擴展配置
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+  target_cpu_utilization: 0.6
+
+# 資源配置
+resources:
+  cpu: 1
+  memory_gb: 1
+  disk_size_gb: 10
+
+# 網路配置
+network:
+  forwarded_ports:
+    - 8080
+
+# 健康檢查
+readiness_check:
+  path: "/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 4
+  success_threshold: 2
+
+# 處理靜態文件
+handlers:
+  # 處理前端靜態資源
+  - url: /static
+    static_dir: frontend/build/static
+    secure: always
+
+  # 處理前端 index.html
+  - url: /
+    static_files: frontend/build/index.html
+    upload: frontend/build/index.html
+    secure: always
+
+  # API 路由
+  - url: /api/.*
+    script: auto
+    secure: always
+
+  # WebSocket 連接
+  - url: /socket.io/.*
+    script: auto
+    secure: always
+
+  # 所有其他請求導向前端
+  - url: /.*
+    static_files: frontend/build/index.html
+    upload: frontend/build/index.html
+    secure: always

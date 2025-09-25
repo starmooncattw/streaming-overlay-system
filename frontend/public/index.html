@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="專業的直播疊加系統，支援 YouTube、Twitch 整合和即時斗內追蹤" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- OBS Browser Source 優化 -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: transparent;
+      }
+      
+      /* OBS 透明背景支援 */
+      .obs-overlay {
+        background: transparent !important;
+      }
+      
+      /* 載入動畫 */
+      .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    
+    <title>Streaming Overlay System</title>
+  </head>
+  <body>
+    <noscript>您需要啟用 JavaScript 才能運行此應用程式。</noscript>
+    <div id="root">
+      <!-- 載入中顯示 -->
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; color: white;">
+        <div class="loading-spinner"></div>
+        <span style="margin-left: 10px;">載入中...</span>
+      </div>
+    </div>
+    
+    <!-- 
+      此應用程式專為直播疊加設計
+      支援 OBS Browser Source 透明背景
+      最佳解析度: 1920x1080
+    -->
+  </body>
+</html>
