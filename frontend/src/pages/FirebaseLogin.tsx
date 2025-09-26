@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import styled from 'styled-components';
@@ -293,10 +293,12 @@ const FirebaseLogin: React.FC = () => {
   }
 
   // 如果已經認證，重定向
-  if (isAuthenticated && user) {
-    const from = (location.state as any)?.from?.pathname || '/dashboard';
-    return <Navigate to={from} replace />;
-  }
+  useEffect(() => {
+    if (isAuthenticated && user && !initializing) {
+      const from = (location.state as any)?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, user, initializing, navigate, location]);
 
   // 忘記密碼表單
   if (showForgotPassword) {

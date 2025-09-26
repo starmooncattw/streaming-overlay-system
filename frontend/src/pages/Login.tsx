@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import styled from 'styled-components';
@@ -247,11 +247,7 @@ const Login: React.FC = () => {
     }
   };
 
-  // 如果已經認證，重定向
-  if (isAuthenticated && user) {
-    const from = (location.state as any)?.from?.pathname || '/dashboard';
-    return <Navigate to={from} replace />;
-  }
+  // 如果已經認證，重定向 - 已在 useEffect 中處理
 
   return (
     <LoginContainer>

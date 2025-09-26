@@ -27,17 +27,12 @@ export const useFirebaseAuth = () => {
             
             // 更新 Redux store 中的用戶狀態
             const userData = {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email || '',
+              id: parseInt(firebaseUser.uid) || 0, // 轉換為數字 ID
               username: userProfile.username,
-              displayName: userProfile.displayName,
+              email: firebaseUser.email || '',
               role: userProfile.role,
-              avatar: userProfile.avatar,
-              emailVerified: firebaseUser.emailVerified,
-              isActive: userProfile.isActive,
-              createdAt: userProfile.createdAt,
-              lastLoginAt: userProfile.lastLoginAt,
-              profile: userProfile
+              streamerId: userProfile.role === 'streamer' ? firebaseUser.uid : undefined,
+              createdAt: userProfile.createdAt.toDate().toISOString(), // 轉換為 ISO 字串
             };
             dispatch(updateUser(userData));
           } catch (error) {
@@ -51,7 +46,7 @@ export const useFirebaseAuth = () => {
           // 用戶未登入
           setUserState(null);
           setProfile(null);
-          dispatch(logout());
+          dispatch(logout() as any);
         }
       } catch (error) {
         console.error('認證狀態處理失敗:', error);
