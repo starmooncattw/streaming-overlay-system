@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
+import { User } from 'firebase/auth';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -24,7 +25,7 @@ import { RootState } from './store/store';
 import './App.css';
 
 const App: React.FC = () => {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState<User | null>(null);
   const [initializing, setInitializing] = React.useState(true);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
