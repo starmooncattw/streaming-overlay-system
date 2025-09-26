@@ -5,8 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 // Pages
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import FirebaseLogin from './pages/FirebaseLogin';
+import GoogleLogin from './pages/GoogleLogin';
 import OverlayView from './pages/OverlayView';
 import Settings from './pages/Settings';
 
@@ -15,8 +14,8 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Navbar from './components/layout/Navbar';
 
-// Hooks
-import useFirebaseAuth from './hooks/useFirebaseAuth';
+// Services
+import { googleAuthService } from './services/googleAuthService';
 
 // Store
 import { RootState } from './store/store';
@@ -25,7 +24,20 @@ import { RootState } from './store/store';
 import './App.css';
 
 const App: React.FC = () => {
-  const { user, initializing, isAuthenticated } = useFirebaseAuth();
+  const [user, setUser] = React.useState(null);
+  const [initializing, setInitializing] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  // 監聽 Google 認證狀態
+  React.useEffect(() => {
+    const unsubscribe = googleAuthService.onAuthStateChanged((firebaseUser) => {
+      setUser(firebaseUser);
+      setIsAuthenticated(!!firebaseUser);
+      setInitializing(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // 如果正在初始化，顯示載入畫面
   if (initializing) {
@@ -60,16 +72,10 @@ const App: React.FC = () => {
       {/* 主要內容區域 */}
       <div style={{ paddingTop: isAuthenticated ? '70px' : '0' }}>
         <Routes>
-          {/* 公開路由 */}
+          {/* Google 登入頁面 */}
           <Route 
             path="/login" 
-            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <FirebaseLogin />} 
-          />
-          
-          {/* 傳統登入頁面 (備用) */}
-          <Route 
-            path="/login-legacy" 
-            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <GoogleLogin />} 
           />
           
           {/* OBS 疊加視圖 - 不需要認證 */}

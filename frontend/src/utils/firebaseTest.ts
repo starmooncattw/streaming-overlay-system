@@ -1,5 +1,6 @@
 import { auth, db } from '../config/firebase';
-import { connectAuthEmulator, connectFirestoreEmulator } from 'firebase/auth';
+import { connectAuthEmulator } from 'firebase/auth';
+import { connectFirestoreEmulator } from 'firebase/firestore';
 
 // Firebase 連接測試工具
 export const testFirebaseConnection = async () => {
