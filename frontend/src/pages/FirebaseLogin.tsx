@@ -249,6 +249,7 @@ const FirebaseLogin: React.FC = () => {
     }
   }, [error, dispatch]);
 
+
   // 處理登入
   const handleLogin = async (data: LoginFormData) => {
     try {
@@ -292,13 +293,7 @@ const FirebaseLogin: React.FC = () => {
     return <LoadingSpinner fullScreen text="初始化中..." />;
   }
 
-  // 如果已經認證，重定向
-  useEffect(() => {
-    if (isAuthenticated && user && !initializing) {
-      const from = (location.state as any)?.from?.pathname || '/dashboard';
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, user, initializing, navigate, location]);
+  // 如果已經認證，重定向 - 已在上方 useEffect 中處理
 
   // 忘記密碼表單
   if (showForgotPassword) {
