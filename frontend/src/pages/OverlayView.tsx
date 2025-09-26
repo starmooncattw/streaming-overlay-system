@@ -1,16 +1,254 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { ChatStyle, ChatMessage } from '../types/style';
+import { styleService } from '../services/styleService';
 
 const OverlayView: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { streamerId } = useParams<{ streamerId: string }>();
+  const [searchParams] = useSearchParams();
+  const styleId = searchParams.get('style');
   
+  const [style, setStyle] = useState<ChatStyle | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadStyle();
+    // 添加測試訊息
+    addTestMessages();
+    
+    // 模擬接收新訊息
+    const interval = setInterval(() => {
+      addRandomTestMessage();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [styleId]);
+
+  const loadStyle = async () => {
+    if (!styleId) {
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const styleData = await styleService.getStyleById(styleId);
+      setStyle(styleData);
+    } catch (error) {
+      console.error('載入樣式失敗:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addTestMessages = () => {
+    const testMessages: ChatMessage[] = [
+      {
+        id: '1',
+        username: '觀眾A',
+        message: '哈囉！直播開始了嗎？',
+        timestamp: new Date(),
+        platform: 'youtube'
+      },
+      {
+        id: '2',
+        username: '粉絲B',
+        message: '今天要玩什麼遊戲呢？',
+        timestamp: new Date(),
+        platform: 'twitch'
+      }
+    ];
+    setMessages(testMessages);
+  };
+
+  const addRandomTestMessage = () => {
+    const randomMessages = [
+      '太精彩了！',
+      '666666',
+      '主播加油！',
+      '這個操作太神了',
+      '笑死我了 XD',
+      '求攻略',
+      '第一次看直播',
+      '訂閱了！',
+      '什麼時候下播？',
+      '音量可以大聲一點嗎？'
+    ];
+    
+    const randomUsernames = [
+      '遊戲高手', '路人甲', '夜貓子', '學生黨', '上班族', 
+      '遊戲新手', '老粉絲', '路過的', '好奇寶寶', '支持者'
+    ];
+
+    const newMessage: ChatMessage = {
+      id: Date.now().toString(),
+      username: randomUsernames[Math.floor(Math.random() * randomUsernames.length)],
+      message: randomMessages[Math.floor(Math.random() * randomMessages.length)],
+      timestamp: new Date(),
+      platform: Math.random() > 0.5 ? 'youtube' : 'twitch'
+    };
+
+    setMessages(prev => [...prev.slice(-9), newMessage]); // 保持最多10條訊息
+  };
+
+  const generateMessageStyle = (style: ChatStyle) => {
+    return {
+      fontFamily: style.font.family,
+      fontSize: `${style.font.size}px`,
+      fontWeight: style.font.weight,
+      color: style.font.color,
+      backgroundColor: `${style.background.color}${Math.round(style.background.opacity * 255).toString(16).padStart(2, '0')}`,
+      padding: `${style.layout.padding}px`,
+      margin: `${style.layout.margin}px`,
+      borderRadius: `${style.layout.borderRadius}px`,
+      maxWidth: style.layout.maxWidth ? `${style.layout.maxWidth}px` : 'none',
+      textAlign: style.layout.alignment as any,
+      backdropFilter: style.background.blur > 0 ? `blur(${style.background.blur}px)` : 'none',
+      textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)',
+      animation: `${style.animation?.entrance || 'fade'} ${style.animation?.duration || 300}ms ease-out`,
+      animationDelay: `${style.animation?.delay || 0}ms`
+    };
+  };
+
+  if (loading) {
+    return (
+      <OBSContainer>
+        <LoadingMessage>載入中...</LoadingMessage>
+      </OBSContainer>
+    );
+  }
+
+  if (!style) {
+    return (
+      <OBSContainer>
+        <ErrorMessage>找不到指定的樣式</ErrorMessage>
+      </OBSContainer>
+    );
+  }
+
   return (
-    <div className="overlay-view">
-      <h2>Overlay View</h2>
-      <p>Overlay ID: {id}</p>
-      {/* Add your overlay content here */}
-    </div>
+    <OBSContainer>
+      <ChatContainer className={`chat-container ${style.displayMode}`}>
+        {messages.map((message) => (
+          <ChatMessageElement
+            key={message.id}
+            style={generateMessageStyle(style)}
+          >
+            <Username platform={message.platform}>
+              {message.username}:
+            </Username>
+            <MessageText>
+              {message.message}
+            </MessageText>
+          </ChatMessageElement>
+        ))}
+      </ChatContainer>
+      
+      {/* 注入動態 CSS */}
+      <style>
+        {`
+          @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes slide {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+          }
+          
+          @keyframes bounce {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+          }
+        `}
+      </style>
+    </OBSContainer>
   );
 };
+
+// 樣式組件
+const OBSContainer = styled.div`
+  min-height: 100vh;
+  background: transparent !important;
+  padding: 1rem;
+  overflow: hidden;
+`;
+
+const ChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  &.horizontal {
+    align-items: flex-start;
+  }
+  
+  &.dialog {
+    align-items: flex-start;
+    max-width: 600px;
+  }
+  
+  &.danmaku {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    right: 0;
+    align-items: center;
+  }
+  
+  &.notebook {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    max-width: 700px;
+  }
+`;
+
+const ChatMessageElement = styled.div`
+  display: flex;
+  align-items: baseline;
+  word-wrap: break-word;
+  line-height: 1.4;
+`;
+
+const Username = styled.span<{ platform?: string }>`
+  font-weight: bold;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  
+  ${props => props.platform === 'youtube' && `
+    color: #ff0000;
+  `}
+  
+  ${props => props.platform === 'twitch' && `
+    color: #9146ff;
+  `}
+  
+  ${props => props.platform === 'test' && `
+    color: #00ff00;
+  `}
+`;
+
+const MessageText = styled.span`
+  word-break: break-word;
+`;
+
+const LoadingMessage = styled.div`
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff6b6b;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+`;
 
 export default OverlayView;

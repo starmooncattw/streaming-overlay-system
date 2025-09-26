@@ -6,6 +6,7 @@ import { User } from 'firebase/auth';
 
 // Pages
 import Dashboard from './pages/Dashboard';
+import EnhancedDashboard from './pages/EnhancedDashboard';
 import GoogleLogin from './pages/GoogleLogin';
 import OverlayView from './pages/OverlayView';
 import Settings from './pages/Settings';
@@ -84,6 +85,12 @@ const App: React.FC = () => {
           
           {/* 受保護的路由 */}
           <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <EnhancedDashboard />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/dashboard-old" element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
