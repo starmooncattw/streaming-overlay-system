@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 // 動畫定義
 const spin = keyframes`
@@ -48,7 +48,7 @@ const Spinner = styled.div<{ variant: string; size: string }>`
     
     switch (props.variant) {
       case 'dots':
-        return `
+        return css`
           width: ${size};
           height: ${size};
           position: relative;
@@ -83,7 +83,7 @@ const Spinner = styled.div<{ variant: string; size: string }>`
         `;
       
       case 'bounce':
-        return `
+        return css`
           width: ${size};
           height: ${size};
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -92,7 +92,7 @@ const Spinner = styled.div<{ variant: string; size: string }>`
         `;
       
       default: // spinner
-        return `
+        return css`
           width: ${size};
           height: ${size};
           border: 3px solid rgba(102, 126, 234, 0.1);
