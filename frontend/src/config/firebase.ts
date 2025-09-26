@@ -1,7 +1,8 @@
+// frontend/src/config/firebase.ts - 生產環境版本（Cloud Shell 適用）
 import { initializeApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 import { getAnalytics } from 'firebase/analytics';
 
 // 檢查必要的環境變數
@@ -34,13 +35,14 @@ const firebaseConfig = {
 console.log('🔥 Firebase 配置載入:', {
   projectId: firebaseConfig.projectId,
   authDomain: firebaseConfig.authDomain,
-  hasApiKey: !!firebaseConfig.apiKey
+  hasApiKey: !!firebaseConfig.apiKey,
+  environment: 'PRODUCTION (Cloud Shell)'
 });
 
 // 初始化 Firebase
 const app = initializeApp(firebaseConfig);
 
-// 初始化服務
+// 初始化服務 - 直接連接線上服務，不使用模擬器
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
@@ -50,47 +52,19 @@ export const analytics = typeof window !== 'undefined' && process.env.NODE_ENV =
   ? getAnalytics(app) 
   : null;
 
-// 開發環境模擬器設定
-if (process.env.NODE_ENV === 'development') {
-  const isEmulatorConnected = {
-    auth: false,
-    firestore: false,
-    storage: false
-  };
+// ⚠️ 重要：Cloud Shell 環境強制使用線上 Firebase 服務
+// 不連接任何模擬器，直接使用 Firebase 線上服務
+console.log('🌐 Cloud Shell 環境：直接連接 Firebase 線上服務');
+console.log('✅ 跳過模擬器連接，使用生產環境配置');
 
-  // Auth 模擬器
-  if (!isEmulatorConnected.auth) {
-    try {
-      connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-      isEmulatorConnected.auth = true;
-      console.log('🔥 Firebase Auth 模擬器已連接');
-    } catch (error) {
-      console.warn('Firebase Auth 模擬器連接失敗，使用線上服務');
-    }
+// 驗證連接狀態
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    console.log('✅ Firebase Auth 連接成功，用戶已登入:', user.email);
+  } else {
+    console.log('ℹ️ Firebase Auth 連接成功，等待用戶登入');
   }
-
-  // Firestore 模擬器
-  if (!isEmulatorConnected.firestore) {
-    try {
-      connectFirestoreEmulator(db, 'localhost', 8080);
-      isEmulatorConnected.firestore = true;
-      console.log('🔥 Firebase Firestore 模擬器已連接');
-    } catch (error) {
-      console.warn('Firebase Firestore 模擬器連接失敗，使用線上服務');
-    }
-  }
-
-  // Storage 模擬器
-  if (!isEmulatorConnected.storage) {
-    try {
-      connectStorageEmulator(storage, 'localhost', 9199);
-      isEmulatorConnected.storage = true;
-      console.log('🔥 Firebase Storage 模擬器已連接');
-    } catch (error) {
-      console.warn('Firebase Storage 模擬器連接失敗，使用線上服務');
-    }
-  }
-}
+});
 
 // 導出 Firebase 應用實例
 export default app;
