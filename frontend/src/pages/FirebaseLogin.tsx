@@ -14,6 +14,7 @@ import {
 } from '../store/slices/firebaseAuthSlice';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import useFirebaseAuth from '../hooks/useFirebaseAuth';
+import { testFirebaseConnection, diagnoseNetworkIssue } from '../utils/firebaseTest';
 
 // 樣式組件 (重用之前的樣式)
 const LoginContainer = styled.div`
@@ -288,6 +289,30 @@ const FirebaseLogin: React.FC = () => {
     }
   };
 
+  // 診斷 Firebase 連接
+  const handleDiagnose = async () => {
+    toast.loading('正在診斷連接...', { id: 'diagnose' });
+    
+    try {
+      // 執行網路診斷
+      const networkResult = await diagnoseNetworkIssue();
+      console.log('網路診斷結果:', networkResult);
+      
+      // 執行 Firebase 連接測試
+      const firebaseResult = await testFirebaseConnection() as any;
+      console.log('Firebase 連接測試結果:', firebaseResult);
+      
+      if (firebaseResult.success) {
+        toast.success('Firebase 連接正常！', { id: 'diagnose' });
+      } else {
+        toast.error(`連接失敗: ${firebaseResult.message}`, { id: 'diagnose' });
+      }
+    } catch (error: any) {
+      console.error('診斷過程出錯:', error);
+      toast.error(`診斷失敗: ${error.message}`, { id: 'diagnose' });
+    }
+  };
+
   // 如果正在初始化，顯示載入畫面
   if (initializing) {
     return <LoadingSpinner fullScreen text="初始化中..." />;
@@ -406,6 +431,19 @@ const FirebaseLogin: React.FC = () => {
 
             <SubmitButton type="submit" disabled={loading}>
               {loading ? <LoadingSpinner size="small" /> : '登入'}
+            </SubmitButton>
+
+            {/* 診斷按鈕 */}
+            <SubmitButton 
+              type="button" 
+              onClick={handleDiagnose}
+              style={{ 
+                backgroundColor: '#f59e0b', 
+                marginTop: '0.5rem',
+                fontSize: '0.875rem'
+              }}
+            >
+              🔍 診斷連接
             </SubmitButton>
 
             <ForgotPassword 
