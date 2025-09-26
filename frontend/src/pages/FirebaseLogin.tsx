@@ -231,13 +231,15 @@ const FirebaseLogin: React.FC = () => {
   const registerForm = useForm<RegisterFormData>();
   const forgotPasswordForm = useForm<{ email: string }>();
 
+  const navigate = useNavigate();
+
   // 如果已經登入，重定向到目標頁面
   useEffect(() => {
     if (isAuthenticated && user && !initializing) {
       const from = (location.state as any)?.from?.pathname || '/dashboard';
-      return <Navigate to={from} replace />;
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, user, location, initializing]);
+  }, [isAuthenticated, user, location.state, initializing, navigate]);
 
   // 清除錯誤訊息
   useEffect(() => {

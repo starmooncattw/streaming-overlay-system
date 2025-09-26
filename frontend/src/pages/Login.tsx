@@ -203,13 +203,15 @@ const Login: React.FC = () => {
   const loginForm = useForm<LoginFormData>();
   const registerForm = useForm<RegisterFormData>();
 
+  const navigate = useNavigate();
+
   // 如果已經登入，重定向到目標頁面
   useEffect(() => {
     if (isAuthenticated && user) {
       const from = (location.state as any)?.from?.pathname || '/dashboard';
-      return <Navigate to={from} replace />;
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, user, location]);
+  }, [isAuthenticated, user, location.state, navigate]);
 
   // 清除錯誤訊息
   useEffect(() => {

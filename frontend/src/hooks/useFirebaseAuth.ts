@@ -26,27 +26,26 @@ export const useFirebaseAuth = () => {
             setProfile(userProfile);
             
             // 更新 Redux store 中的用戶狀態
-            dispatch(updateUser({
-              user: {
-                uid: firebaseUser.uid,
-                email: firebaseUser.email || '',
-                username: userProfile.username,
-                displayName: userProfile.displayName,
-                role: userProfile.role,
-                avatar: userProfile.avatar,
-                emailVerified: firebaseUser.emailVerified,
-                isActive: userProfile.isActive,
-                createdAt: userProfile.createdAt,
-                lastLoginAt: userProfile.lastLoginAt
-              },
+            const userData = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email || '',
+              username: userProfile.username,
+              displayName: userProfile.displayName,
+              role: userProfile.role,
+              avatar: userProfile.avatar,
+              emailVerified: firebaseUser.emailVerified,
+              isActive: userProfile.isActive,
+              createdAt: userProfile.createdAt,
+              lastLoginAt: userProfile.lastLoginAt,
               profile: userProfile
-            }));
+            };
+            dispatch(updateUser(userData));
           } catch (error) {
             console.error('獲取用戶資料失敗:', error);
             // 如果獲取資料失敗，清除用戶狀態
             setUserState(null);
             setProfile(null);
-            dispatch(logout());
+            dispatch(logout() as any);
           }
         } else {
           // 用戶未登入
