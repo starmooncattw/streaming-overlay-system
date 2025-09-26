@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { User } from 'firebase/auth';
 import { ChatStyle, ChatMessage } from '../types/style';
 import StyleManager from '../components/style/StyleManager';
 import TestMessageSender from '../components/test/TestMessageSender';
@@ -8,7 +9,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
 const EnhancedDashboard: React.FC = () => {
-  const { user } = useFirebaseAuth();
+  const { user, loading } = useFirebaseAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'styles' | 'test' | 'obs'>('overview');
   const [selectedStyle, setSelectedStyle] = useState<ChatStyle | null>(null);
   const [recentMessages, setRecentMessages] = useState<ChatMessage[]>([]);
@@ -28,6 +29,14 @@ const EnhancedDashboard: React.FC = () => {
     setRecentMessages(prev => [message, ...prev.slice(0, 9)]); // 保持最多10條訊息
   };
 
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <LoadingSpinner size="large" />
+        <p>載入中...</p>
+      </LoadingContainer>
+    );
+  }
 
   if (!user) {
     return (

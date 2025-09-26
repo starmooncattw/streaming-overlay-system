@@ -21,6 +21,8 @@ export interface StreamerProfile {
   email: string;
   displayName: string;
   photoURL?: string;
+  avatar?: string; // 添加 avatar 屬性
+  role: 'admin' | 'streamer' | 'viewer'; // 添加 role 屬性
   createdAt: Timestamp;
   updatedAt: Timestamp;
   lastLoginAt: Timestamp;
@@ -74,6 +76,8 @@ class GoogleAuthService {
           email: user.email || '',
           displayName: user.displayName || '未命名直播主',
           photoURL: user.photoURL || undefined,
+          avatar: user.photoURL || undefined, // 設定 avatar
+          role: 'streamer', // 預設角色為 streamer
           createdAt: serverTimestamp() as Timestamp,
           updatedAt: serverTimestamp() as Timestamp,
           lastLoginAt: serverTimestamp() as Timestamp,
@@ -89,9 +93,20 @@ class GoogleAuthService {
       } else {
         // 現有用戶 - 更新登入時間
         profile = userDoc.data() as StreamerProfile;
+        
+        // 確保舊用戶也有 role 和 avatar 屬性
+        if (!profile.role) {
+          profile.role = 'streamer';
+        }
+        if (!profile.avatar && user.photoURL) {
+          profile.avatar = user.photoURL;
+        }
+        
         await updateDoc(doc(db, 'streamers', user.uid), {
           lastLoginAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
+          avatar: profile.avatar,
+          role: profile.role
         });
         console.log('✅ 直播主資料已更新');
       }
@@ -121,7 +136,17 @@ class GoogleAuthService {
       if (!userDoc.exists()) {
         throw new Error('找不到直播主資料');
       }
-      return userDoc.data() as StreamerProfile;
+      const profile = userDoc.data() as StreamerProfile;
+      
+      // 確保所有必要屬性存在
+      if (!profile.role) {
+        profile.role = 'streamer';
+      }
+      if (!profile.avatar && profile.photoURL) {
+        profile.avatar = profile.photoURL;
+      }
+      
+      return profile;
     } catch (error: any) {
       console.error('獲取直播主資料失敗:', error);
       throw error;

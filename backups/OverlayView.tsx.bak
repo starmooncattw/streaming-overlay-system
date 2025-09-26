@@ -41,10 +41,6 @@ const OverlayView: React.FC = () => {
       setLoading(false);
     }
   };
-  
-  useEffect(() => {
-    loadStyle();
-  }, [styleId]);
 
   const addTestMessages = () => {
     const testMessages: ChatMessage[] = [
