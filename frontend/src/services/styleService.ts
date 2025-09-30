@@ -8,7 +8,8 @@ import {
   deleteDoc, 
   query, 
   where,
-  serverTimestamp 
+  serverTimestamp,
+  Timestamp 
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { ChatStyle } from '../types/style';
@@ -19,7 +20,6 @@ class StyleService {
   // 獲取用戶的所有樣式 - 使用簡單查詢
   async getStylesByUser(userId: string): Promise<ChatStyle[]> {
     try {
-      // 簡化查詢，只按 userId 過濾
       const q = query(
         collection(db, this.collectionName),
         where('userId', '==', userId)
@@ -35,17 +35,19 @@ class StyleService {
         } as ChatStyle);
       });
       
-      // 在客戶端排序
+      // 在客戶端排序 - 修復時間戳處理
       styles.sort((a, b) => {
-        const aTime = a.updatedAt?.toMillis?.() || 0;
-        const bTime = b.updatedAt?.toMillis?.() || 0;
+        const aTime = a.updatedAt instanceof Timestamp ? a.updatedAt.toMillis() : 
+                     a.updatedAt instanceof Date ? a.updatedAt.getTime() : 0;
+        const bTime = b.updatedAt instanceof Timestamp ? b.updatedAt.toMillis() : 
+                     b.updatedAt instanceof Date ? b.updatedAt.getTime() : 0;
         return bTime - aTime;
       });
       
       return styles;
     } catch (error) {
       console.error('獲取樣式失敗:', error);
-      return []; // 返回空數組而不是拋出錯誤
+      return [];
     }
   }
 
@@ -61,9 +63,15 @@ class StyleService {
 
       const docRef = await addDoc(collection(db, this.collectionName), newStyle);
       
+      // 返回時使用當前時間作為預設值
       return {
         id: docRef.id,
-        ...newStyle
+        userId,
+        name: styleData.name || '未命名樣式',
+        displayMode: styleData.displayMode || 'horizontal',
+        ...styleData,
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now()
       } as ChatStyle;
     } catch (error) {
       console.error('創建樣式失敗:', error);

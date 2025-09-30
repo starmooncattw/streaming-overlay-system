@@ -134,7 +134,7 @@ const EnhancedDashboard: React.FC = () => {
                       </MessageUser>
                       <MessageText>{msg.message}</MessageText>
                       <MessageTime>
-                        {msg.timestamp.toLocaleTimeString()}
+                        {new Date(msg.timestamp).toLocaleTimeString()}
                       </MessageTime>
                     </MessageItem>
                   ))}
