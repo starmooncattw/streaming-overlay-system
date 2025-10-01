@@ -99,7 +99,7 @@ const UserName = styled.span`
   }
 `;
 
-const DropdownMenu = styled.div<{ isOpen: boolean }>`
+const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   position: absolute;
   top: 100%;
   right: 0;
@@ -110,9 +110,9 @@ const DropdownMenu = styled.div<{ isOpen: boolean }>`
   border-radius: 12px;
   padding: 0.5rem 0;
   min-width: 200px;
-  opacity: ${props => props.isOpen ? 1 : 0};
-  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
-  transform: ${props => props.isOpen ? 'translateY(0)' : 'translateY(-10px)'};
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
+  transform: ${props => props.$isOpen ? 'translateY(0)' : 'translateY(-10px)'};
   transition: all 0.2s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 `;
@@ -142,12 +142,12 @@ const DropdownDivider = styled.div`
   margin: 0.5rem 0;
 `;
 
-const StatusIndicator = styled.div<{ status: 'online' | 'offline' | 'streaming' }>`
+const StatusIndicator = styled.div<{ $status: 'online' | 'offline' | 'streaming' }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: ${props => {
-    switch (props.status) {
+    switch (props.$status) {
       case 'online': return '#10b981';
       case 'streaming': return '#ef4444';
       default: return '#6b7280';
@@ -273,10 +273,10 @@ const Navbar: React.FC = () => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             {!profile.avatar && getInitials(profile.displayName)}
-            <StatusIndicator status={getUserStatus()} />
+            <StatusIndicator $status={getUserStatus()} />
           </UserAvatar>
 
-          <DropdownMenu isOpen={dropdownOpen}>
+          <DropdownMenu $isOpen={dropdownOpen}>
             <DropdownItem onClick={() => {
               navigate('/profile');
               setDropdownOpen(false);

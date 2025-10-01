@@ -4,7 +4,6 @@ import { ChatStyle, ChatMessage } from '../types/style';
 import StyleManager from '../components/style/StyleManager';
 import TestMessageSender from '../components/test/TestMessageSender';
 import useFirebaseAuth from '../hooks/useFirebaseAuth';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
 const EnhancedDashboard: React.FC = () => {
@@ -56,26 +55,26 @@ const EnhancedDashboard: React.FC = () => {
 
       {/* 標籤導航 */}
       <TabNavigation>
-        <TabButton 
-          active={activeTab === 'overview'} 
+        <TabButton
+          $active={activeTab === 'overview'}
           onClick={() => setActiveTab('overview')}
         >
           📊 總覽
         </TabButton>
-        <TabButton 
-          active={activeTab === 'styles'} 
+        <TabButton
+          $active={activeTab === 'styles'}
           onClick={() => setActiveTab('styles')}
         >
           🎨 樣式管理
         </TabButton>
-        <TabButton 
-          active={activeTab === 'test'} 
+        <TabButton
+          $active={activeTab === 'test'}
           onClick={() => setActiveTab('test')}
         >
           💬 測試訊息
         </TabButton>
-        <TabButton 
-          active={activeTab === 'obs'} 
+        <TabButton
+          $active={activeTab === 'obs'}
           onClick={() => setActiveTab('obs')}
         >
           📺 OBS 設定
@@ -166,7 +165,7 @@ const EnhancedDashboard: React.FC = () => {
                   <h4>當前選擇的樣式：{selectedStyle.name}</h4>
                   <OBSUrlContainer>
                     <OBSUrl>{generateOBSUrl(selectedStyle)}</OBSUrl>
-                    <CopyButton 
+                    <CopyButton
                       onClick={() => {
                         navigator.clipboard.writeText(generateOBSUrl(selectedStyle));
                         toast.success('OBS 網址已複製到剪貼簿');
@@ -174,6 +173,11 @@ const EnhancedDashboard: React.FC = () => {
                     >
                       複製網址
                     </CopyButton>
+                    <PreviewButton
+                      onClick={() => window.open(generateOBSUrl(selectedStyle), '_blank')}
+                    >
+                      預覽
+                    </PreviewButton>
                   </OBSUrlContainer>
                 </OBSUrlSection>
 
@@ -221,21 +225,6 @@ const DashboardContainer = styled.div`
   min-height: 100vh;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   padding: 2rem;
-`;
-
-const LoadingContainer = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-  color: white;
-  
-  p {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-  }
 `;
 
 const ErrorContainer = styled.div`
@@ -322,9 +311,9 @@ const TabNavigation = styled.div`
   padding: 0.5rem;
 `;
 
-const TabButton = styled.button<{ active: boolean }>`
-  background: ${props => props.active ? 
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 
+const TabButton = styled.button<{ $active: boolean }>`
+  background: ${props => props.$active ?
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
     'transparent'
   };
   color: white;
@@ -337,8 +326,8 @@ const TabButton = styled.button<{ active: boolean }>`
   white-space: nowrap;
 
   &:hover {
-    background: ${props => props.active ? 
-      'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' : 
+    background: ${props => props.$active ?
+      'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' :
       'rgba(255, 255, 255, 0.1)'
     };
   }
@@ -519,6 +508,23 @@ const CopyButton = styled.button`
 
   &:hover {
     background: #218838;
+    transform: translateY(-2px);
+  }
+`;
+
+const PreviewButton = styled.button`
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #5a6fd8;
     transform: translateY(-2px);
   }
 `;

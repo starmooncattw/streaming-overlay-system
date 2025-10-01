@@ -15,7 +15,23 @@ const OverlayView: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStyle();
+    const loadStyleAsync = async () => {
+      if (!styleId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const styleData = await styleService.getStyleById(styleId);
+        setStyle(styleData);
+      } catch (error) {
+        console.error('載入樣式失敗:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStyleAsync();
 
     // 如果有 streamerId，訂閱即時訊息
     if (streamerId) {
@@ -27,22 +43,6 @@ const OverlayView: React.FC = () => {
       return () => unsubscribe();
     }
   }, [styleId, streamerId]);
-
-  const loadStyle = async () => {
-    if (!styleId) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const styleData = await styleService.getStyleById(styleId);
-      setStyle(styleData);
-    } catch (error) {
-      console.error('載入樣式失敗:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const generateMessageStyle = (style: ChatStyle) => {
     return {

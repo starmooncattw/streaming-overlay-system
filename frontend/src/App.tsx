@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { User } from 'firebase/auth';
 
 // Pages
 import EnhancedDashboard from './pages/EnhancedDashboard';
@@ -20,7 +19,7 @@ import useFirebaseAuth from './hooks/useFirebaseAuth';
 import './App.css';
 
 const App: React.FC = () => {
-  const { user, profile, initializing, isAuthenticated } = useFirebaseAuth();
+  const { initializing, isAuthenticated } = useFirebaseAuth();
   const location = useLocation();
 
   // 檢查是否為 overlay 路由

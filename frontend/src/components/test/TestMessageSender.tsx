@@ -99,14 +99,6 @@ const TestMessageSender: React.FC<TestMessageSenderProps> = ({
     }, 100);
   };
 
-  const copyOBSUrl = () => {
-    if (overlayUrl) {
-      navigator.clipboard.writeText(overlayUrl);
-      toast.success('OBS 網址已複製到剪貼簿');
-    } else {
-      toast.error('請先選擇一個樣式');
-    }
-  };
 
   return (
     <Container>
@@ -146,7 +138,7 @@ const TestMessageSender: React.FC<TestMessageSenderProps> = ({
         </InputGroup>
 
         <ButtonGroup>
-          <SendButton onClick={handleSendMessage} primary>
+          <SendButton onClick={handleSendMessage} $primary>
             發送訊息
           </SendButton>
           <ActionButton onClick={handleRandomMessage}>
@@ -169,27 +161,6 @@ const TestMessageSender: React.FC<TestMessageSenderProps> = ({
         </QuickMessageGrid>
       </QuickMessagesSection>
 
-      {overlayUrl && (
-        <OBSSection>
-          <SectionTitle>OBS 設定</SectionTitle>
-          <OBSUrlContainer>
-            <OBSUrl>{overlayUrl}</OBSUrl>
-            <CopyButton onClick={copyOBSUrl}>
-              複製網址
-            </CopyButton>
-          </OBSUrlContainer>
-          <OBSInstructions>
-            <h4>📺 OBS 設定步驟：</h4>
-            <ol>
-              <li>在 OBS 中添加「瀏覽器來源」</li>
-              <li>將上方網址貼到 URL 欄位</li>
-              <li>設定寬度: 1920，高度: 1080</li>
-              <li>勾選「關閉來源時關閉瀏覽器」</li>
-              <li>點擊確定完成設定</li>
-            </ol>
-          </OBSInstructions>
-        </OBSSection>
-      )}
     </Container>
   );
 };
@@ -303,9 +274,9 @@ const ButtonGroup = styled.div`
   margin-top: 1.5rem;
 `;
 
-const SendButton = styled.button<{ primary?: boolean }>`
-  background: ${props => props.primary ? 
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 
+const SendButton = styled.button<{ $primary?: boolean }>`
+  background: ${props => props.$primary ?
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
     'rgba(255, 255, 255, 0.1)'
   };
   color: white;
@@ -318,8 +289,8 @@ const SendButton = styled.button<{ primary?: boolean }>`
 
   &:hover {
     transform: translateY(-2px);
-    background: ${props => props.primary ? 
-      'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' : 
+    background: ${props => props.$primary ?
+      'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' :
       'rgba(255, 255, 255, 0.2)'
     };
   }
@@ -371,70 +342,6 @@ const QuickMessageButton = styled.button`
     background: rgba(255, 255, 255, 0.1);
     color: white;
     transform: translateY(-1px);
-  }
-`;
-
-const OBSSection = styled.div`
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 2rem;
-`;
-
-const OBSUrlContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  align-items: center;
-`;
-
-const OBSUrl = styled.div`
-  flex: 1;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 0.75rem;
-  color: #00ff00;
-  font-family: 'Courier New', monospace;
-  font-size: 0.8rem;
-  word-break: break-all;
-`;
-
-const CopyButton = styled.button`
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #218838;
-    transform: translateY(-2px);
-  }
-`;
-
-const OBSInstructions = styled.div`
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
-  
-  h4 {
-    color: white;
-    margin: 0 0 0.5rem 0;
-    font-size: 0.9rem;
-  }
-  
-  ol {
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-    padding-left: 1.5rem;
-    font-size: 0.8rem;
-    
-    li {
-      margin-bottom: 0.25rem;
-    }
   }
 `;
 

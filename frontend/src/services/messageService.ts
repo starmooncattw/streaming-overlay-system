@@ -32,7 +32,7 @@ export const messageService = {
     const messagesRef = ref(realtimeDb, `messages/${userId}`);
     const messagesQuery = query(messagesRef, limitToLast(50));
 
-    const unsubscribe = onValue(messagesQuery, (snapshot) => {
+    onValue(messagesQuery, (snapshot) => {
       const messages: ChatMessage[] = [];
       snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val();

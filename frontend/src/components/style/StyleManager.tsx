@@ -122,7 +122,7 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
                   onStyleSelect?.(style);
                   toast.success('樣式已選擇');
                 }}
-                primary
+                $primary
               >
                 選擇
               </ActionButton>
@@ -132,7 +132,7 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
               <ActionButton onClick={() => handleDuplicateStyle(style)}>
                 複製
               </ActionButton>
-              <ActionButton 
+              <ActionButton
                 onClick={() => {
                   navigator.clipboard.writeText(generateOBSUrl(style));
                   toast.success('OBS 網址已複製到剪貼簿');
@@ -140,9 +140,9 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
               >
                 OBS 網址
               </ActionButton>
-              <ActionButton 
+              <ActionButton
                 onClick={() => handleDeleteStyle(style.id)}
-                danger
+                $danger
               >
                 刪除
               </ActionButton>
@@ -289,10 +289,10 @@ const StyleActions = styled.div`
   flex-wrap: wrap;
 `;
 
-const ActionButton = styled.button<{ primary?: boolean; danger?: boolean }>`
-  background: ${props => 
-    props.primary ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
-    props.danger ? '#dc3545' : 
+const ActionButton = styled.button<{ $primary?: boolean; $danger?: boolean }>`
+  background: ${props =>
+    props.$primary ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' :
+    props.$danger ? '#dc3545' :
     'rgba(255, 255, 255, 0.1)'
   };
   color: white;
@@ -305,9 +305,9 @@ const ActionButton = styled.button<{ primary?: boolean; danger?: boolean }>`
 
   &:hover {
     transform: translateY(-1px);
-    background: ${props => 
-      props.primary ? 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' :
-      props.danger ? '#c82333' : 
+    background: ${props =>
+      props.$primary ? 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)' :
+      props.$danger ? '#c82333' :
       'rgba(255, 255, 255, 0.2)'
     };
   }
