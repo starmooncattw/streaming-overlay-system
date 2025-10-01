@@ -65,8 +65,8 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
   const handleDuplicateStyle = async (style: ChatStyle) => {
     try {
       const duplicatedStyle = await styleService.duplicateStyle(
-        style.id, 
-        `${style.name} (副本)`, 
+        style.id,
+        `${style.name} (副本)`,
         user.uid
       );
       setStyles([duplicatedStyle, ...styles]);
@@ -74,6 +74,17 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
     } catch (error) {
       console.error('複製樣式失敗:', error);
       toast.error('複製樣式失敗');
+    }
+  };
+
+  const handleSetDefaultStyle = async (styleId: string) => {
+    try {
+      await styleService.setDefaultStyle(user.uid, styleId);
+      await loadUserStyles();
+      toast.success('預設樣式已設定');
+    } catch (error) {
+      console.error('設定預設樣式失敗:', error);
+      toast.error('設定預設樣式失敗');
     }
   };
 
@@ -110,22 +121,24 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
             </StylePreview>
             
             <StyleInfo>
-              <StyleName>{style.name}</StyleName>
+              <StyleName>
+                {style.name}
+                {style.isDefault && <DefaultBadge>預設</DefaultBadge>}
+              </StyleName>
               <StyleMeta>
                 {style.displayMode} • {style.font?.size || 16}px • {style.font?.family || 'Arial'}
               </StyleMeta>
             </StyleInfo>
             
             <StyleActions>
-              <ActionButton
-                onClick={() => {
-                  onStyleSelect?.(style);
-                  toast.success('樣式已選擇');
-                }}
-                $primary
-              >
-                選擇
-              </ActionButton>
+              {!style.isDefault && (
+                <ActionButton
+                  onClick={() => handleSetDefaultStyle(style.id)}
+                  $primary
+                >
+                  設為預設
+                </ActionButton>
+              )}
               <ActionButton onClick={() => toast('編輯功能開發中')}>
                 編輯
               </ActionButton>
@@ -275,6 +288,18 @@ const StyleName = styled.h4`
   color: white;
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const DefaultBadge = styled.span`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 500;
 `;
 
 const StyleMeta = styled.p`

@@ -4,6 +4,7 @@ export interface ChatStyle {
   id: string;
   userId: string;
   name: string;
+  isDefault?: boolean;
   displayMode: 'horizontal' | 'dialog' | 'danmaku' | 'notebook';
   
   font: {

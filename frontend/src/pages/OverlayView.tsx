@@ -16,13 +16,24 @@ const OverlayView: React.FC = () => {
 
   useEffect(() => {
     const loadStyleAsync = async () => {
-      if (!styleId) {
+      if (!streamerId) {
         setLoading(false);
         return;
       }
 
       try {
-        const styleData = await styleService.getStyleById(styleId);
+        let styleData: ChatStyle | null = null;
+
+        // 如果有指定樣式 ID，優先使用指定的樣式
+        if (styleId) {
+          styleData = await styleService.getStyleById(styleId);
+        }
+
+        // 如果沒有指定樣式或載入失敗，使用預設樣式
+        if (!styleData) {
+          styleData = await styleService.getDefaultStyle(streamerId);
+        }
+
         setStyle(styleData);
       } catch (error) {
         console.error('載入樣式失敗:', error);

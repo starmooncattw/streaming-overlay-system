@@ -171,6 +171,51 @@ class StyleService {
       throw error;
     }
   }
+
+  // 獲取用戶的預設樣式
+  async getDefaultStyle(userId: string): Promise<ChatStyle | null> {
+    try {
+      const q = query(
+        collection(db, this.collectionName),
+        where('userId', '==', userId),
+        where('isDefault', '==', true)
+      );
+
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data()
+        } as ChatStyle;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('獲取預設樣式失敗:', error);
+      return null;
+    }
+  }
+
+  // 設定預設樣式
+  async setDefaultStyle(userId: string, styleId: string): Promise<void> {
+    try {
+      // 先取消所有預設樣式
+      const styles = await this.getStylesByUser(userId);
+      const updatePromises = styles
+        .filter(s => s.isDefault)
+        .map(s => this.updateStyle(s.id, { isDefault: false }));
+
+      await Promise.all(updatePromises);
+
+      // 設定新的預設樣式
+      await this.updateStyle(styleId, { isDefault: true });
+    } catch (error) {
+      console.error('設定預設樣式失敗:', error);
+      throw error;
+    }
+  }
 }
 
 export const styleService = new StyleService();
