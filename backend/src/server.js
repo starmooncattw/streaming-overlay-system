@@ -11,6 +11,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
 const healthRoutes = require('./routes/health');
+const youtubeRoutes = require('./routes/youtube');
 
 // 中介軟體導入
 const errorHandler = require('./middleware/errorHandler');
@@ -75,6 +76,7 @@ if (process.env.NODE_ENV === 'production') {
 // API 路由
 app.use('/health', healthRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/youtube', youtubeRoutes);
 app.use('/api', apiRoutes);
 
 // Socket.IO 連接處理
