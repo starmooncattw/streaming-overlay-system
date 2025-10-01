@@ -25,6 +25,16 @@ const App: React.FC = () => {
   // 檢查是否為 overlay 路由
   const isOverlayRoute = location.pathname.startsWith('/overlay');
 
+  // 設定 body 透明背景 (針對 overlay 路由)
+  React.useEffect(() => {
+    if (isOverlayRoute) {
+      document.body.style.background = 'transparent';
+      return () => {
+        document.body.style.background = '';
+      };
+    }
+  }, [isOverlayRoute]);
+
   // 如果正在初始化,顯示載入畫面 (但 overlay 路由除外)
   if (initializing && !isOverlayRoute) {
     return (
@@ -45,14 +55,6 @@ const App: React.FC = () => {
 
   // OBS Overlay 路由 - 完全獨立，無任何 UI 元素
   if (isOverlayRoute) {
-    // 設定 body 透明背景
-    React.useEffect(() => {
-      document.body.style.background = 'transparent';
-      return () => {
-        document.body.style.background = '';
-      };
-    }, []);
-
     return (
       <Routes>
         <Route path="/overlay/:streamerId" element={<OverlayView />} />
