@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import EnhancedDashboard from './pages/EnhancedDashboard';
 import GoogleLogin from './pages/GoogleLogin';
 import OverlayView from './pages/OverlayView';
+import YouTubeConnect from './pages/YouTubeConnect';
+import YouTubeControl from './pages/YouTubeControl';
 
 // Components
 import LoadingSpinner from './components/common/LoadingSpinner';
@@ -105,6 +107,18 @@ const App: React.FC = () => {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <EnhancedDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* YouTube 路由 */}
+          <Route path="/youtube/connect" element={
+            <ProtectedRoute>
+              <YouTubeConnect />
+            </ProtectedRoute>
+          } />
+          <Route path="/youtube/control" element={
+            <ProtectedRoute>
+              <YouTubeControl />
             </ProtectedRoute>
           } />
 

@@ -18,25 +18,24 @@
 
 ## 🚀 專案狀態
 
-### 📊 開發進度
-| 階段 | 狀態 | 完成度 |
-|------|------|--------|
-| 01-基礎系統架構 | ✅ 完成 | 100% |
-| 02-即時通訊系統 | ✅ 完成 | 100% |
-| 03-YouTube 整合 | 📋 待開發 | 0% |
+| 階段 | 狀態 | 進度 |
+|------|------|------|
+| 01-基礎架構 | ✅ | 100% |
+| 02-即時通訊 | ✅ | 100% |
+| 03-YouTube整合 | 🔄 | 80% |
 
-### ✅ 已完成功能
-- Google OAuth 認證
-- 樣式管理 (CRUD + 複製 + 預設)
-- OBS 透明背景顯示 (`/overlay/:streamerId`)
-- Firebase Realtime Database 即時同步
-- 測試訊息發送器
-- 響應式 UI
+### 當前開發: YouTube 整合
+**任務清單**
+- [x] 環境準備
+- [x] YouTube API 服務
+- [x] OAuth 認證
+- [x] 聊天室爬蟲
+- [x] 前端 UI
+- [ ] Google Cloud 設定
+- [ ] 完整測試
 
-### 🎯 下一步
-- 開始階段 03: YouTube 單直播整合
-- 生產環境 Firestore 索引
-- Realtime Database 安全性規則
+### 已完成
+OAuth認證 / 樣式管理 / OBS整合 / 即時同步
 
 ## 📁 專案結構
 ```
@@ -51,3 +50,25 @@ streaming-overlay-system/
 - **後端**: Node.js + Express + Socket.IO
 - **資料庫**: Firestore + Firebase Realtime Database
 - **部署**: Firebase Hosting + Cloud Run
+
+## 🛠️ 開發流程 (Cloud Shell Editor)
+
+### 初始設定
+```bash
+cd ~/streaming-overlay-system/backend
+npm install  # 安裝所有依賴
+```
+
+### 開發步驟
+1. **Claude Code 更新 package.json** (新增依賴)
+2. **Claude Code 建立程式碼檔案**
+3. **您在 Cloud Shell 執行**: `npm install`
+4. **測試和調整**
+
+### 環境變數設定
+建立 `backend/.env`:
+```env
+YOUTUBE_CLIENT_ID=your_client_id
+YOUTUBE_CLIENT_SECRET=your_client_secret
+YOUTUBE_REDIRECT_URI=http://localhost:5000/youtube/callback
+```

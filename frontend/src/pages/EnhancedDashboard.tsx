@@ -93,6 +93,17 @@ const EnhancedDashboard: React.FC = () => {
               </OverviewCard>
 
               <OverviewCard>
+                <CardIcon>📺</CardIcon>
+                <CardTitle>YouTube 整合</CardTitle>
+                <CardDescription>
+                  連接 YouTube 帳號，搜尋並爬取直播聊天室訊息
+                </CardDescription>
+                <CardButton onClick={() => window.location.href = '/youtube/connect'}>
+                  YouTube 設定
+                </CardButton>
+              </OverviewCard>
+
+              <OverviewCard>
                 <CardIcon>💬</CardIcon>
                 <CardTitle>測試訊息</CardTitle>
                 <CardDescription>
