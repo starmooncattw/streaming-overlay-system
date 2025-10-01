@@ -13,15 +13,9 @@ interface StyleManagerProps {
 const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
   const [styles, setStyles] = useState<ChatStyle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStyle, setSelectedStyle] = useState<ChatStyle | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editingStyle, setEditingStyle] = useState<ChatStyle | null>(null);
 
-  useEffect(() => {
-    loadUserStyles();
-  }, [user]);
-
-  const loadUserStyles = async () => {
+  const loadUserStyles = React.useCallback(async () => {
     try {
       setLoading(true);
       const userStyles = await styleService.getStylesByUser(user.uid);
@@ -32,7 +26,11 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user.uid]);
+
+  useEffect(() => {
+    loadUserStyles();
+  }, [loadUserStyles]);
 
   const handleCreateStyle = async (templateIndex?: number) => {
     try {
@@ -119,16 +117,16 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
             </StyleInfo>
             
             <StyleActions>
-              <ActionButton 
+              <ActionButton
                 onClick={() => {
-                  setSelectedStyle(style);
                   onStyleSelect?.(style);
+                  toast.success('樣式已選擇');
                 }}
                 primary
               >
                 選擇
               </ActionButton>
-              <ActionButton onClick={() => setEditingStyle(style)}>
+              <ActionButton onClick={() => toast.info('編輯功能開發中')}>
                 編輯
               </ActionButton>
               <ActionButton onClick={() => handleDuplicateStyle(style)}>
