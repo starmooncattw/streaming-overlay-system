@@ -126,7 +126,7 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
               >
                 選擇
               </ActionButton>
-              <ActionButton onClick={() => toast.info('編輯功能開發中')}>
+              <ActionButton onClick={() => toast('編輯功能開發中')}>
                 編輯
               </ActionButton>
               <ActionButton onClick={() => handleDuplicateStyle(style)}>
