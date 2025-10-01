@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 const EnhancedDashboard: React.FC = () => {
   const { user } = useFirebaseAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'styles' | 'test' | 'obs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'styles' | 'test'>('overview');
   const [selectedStyle, setSelectedStyle] = useState<ChatStyle | null>(null);
   const [recentMessages, setRecentMessages] = useState<ChatMessage[]>([]);
 
@@ -73,12 +73,6 @@ const EnhancedDashboard: React.FC = () => {
         >
           💬 測試訊息
         </TabButton>
-        <TabButton
-          $active={activeTab === 'obs'}
-          onClick={() => setActiveTab('obs')}
-        >
-          📺 OBS 設定
-        </TabButton>
       </TabNavigation>
 
       {/* 主要內容區域 */}
@@ -102,21 +96,10 @@ const EnhancedDashboard: React.FC = () => {
                 <CardIcon>💬</CardIcon>
                 <CardTitle>測試訊息</CardTitle>
                 <CardDescription>
-                  發送測試訊息到顯示頁面，預覽樣式效果
+                  發送測試訊息到顯示頁面，預覽樣式效果並獲取 OBS 網址
                 </CardDescription>
                 <CardButton onClick={() => setActiveTab('test')}>
                   發送測試
-                </CardButton>
-              </OverviewCard>
-
-              <OverviewCard>
-                <CardIcon>📺</CardIcon>
-                <CardTitle>OBS 整合</CardTitle>
-                <CardDescription>
-                  獲取 OBS Browser Source 網址，設定透明背景顯示
-                </CardDescription>
-                <CardButton onClick={() => setActiveTab('obs')}>
-                  OBS 設定
                 </CardButton>
               </OverviewCard>
             </OverviewGrid>
@@ -153,67 +136,6 @@ const EnhancedDashboard: React.FC = () => {
             onSendMessage={handleTestMessage}
             overlayUrl={selectedStyle ? generateOBSUrl(selectedStyle) : undefined}
           />
-        )}
-
-        {activeTab === 'obs' && (
-          <OBSSection>
-            <SectionTitle>📺 OBS 整合設定</SectionTitle>
-            
-            {selectedStyle ? (
-              <OBSContent>
-                <OBSUrlSection>
-                  <h4>當前選擇的樣式：{selectedStyle.name}</h4>
-                  <OBSUrlContainer>
-                    <OBSUrl>{generateOBSUrl(selectedStyle)}</OBSUrl>
-                    <CopyButton
-                      onClick={() => {
-                        navigator.clipboard.writeText(generateOBSUrl(selectedStyle));
-                        toast.success('OBS 網址已複製到剪貼簿');
-                      }}
-                    >
-                      複製網址
-                    </CopyButton>
-                    <PreviewButton
-                      onClick={() => window.open(generateOBSUrl(selectedStyle), '_blank')}
-                    >
-                      開啟
-                    </PreviewButton>
-                  </OBSUrlContainer>
-                </OBSUrlSection>
-
-                <OBSInstructions>
-                  <h4>📋 OBS 設定步驟：</h4>
-                  <InstructionsList>
-                    <li>在 OBS Studio 中點擊「來源」區域的「+」按鈕</li>
-                    <li>選擇「瀏覽器來源」並建立新的來源</li>
-                    <li>將上方的網址貼到「URL」欄位中</li>
-                    <li>設定寬度為 <code>1920</code>，高度為 <code>1080</code></li>
-                    <li>勾選「關閉來源時關閉瀏覽器」選項</li>
-                    <li>點擊「確定」完成設定</li>
-                    <li>調整來源位置和大小以符合您的需求</li>
-                  </InstructionsList>
-                </OBSInstructions>
-
-                <OBSTips>
-                  <h4>💡 使用技巧：</h4>
-                  <TipsList>
-                    <li><strong>透明背景：</strong> 顯示頁面已設定透明背景，可直接疊加在遊戲畫面上</li>
-                    <li><strong>即時更新：</strong> 修改樣式後會即時反映到 OBS 中</li>
-                    <li><strong>多樣式：</strong> 可以建立多個樣式並切換使用</li>
-                    <li><strong>測試功能：</strong> 使用測試訊息功能預覽效果</li>
-                  </TipsList>
-                </OBSTips>
-              </OBSContent>
-            ) : (
-              <NoStyleSelected>
-                <h4>請先選擇一個樣式</h4>
-                <p>前往「樣式管理」頁面選擇或建立一個樣式，然後回到此頁面獲取 OBS 網址。</p>
-                <SelectStyleButton onClick={() => setActiveTab('styles')}>
-                  選擇樣式
-                </SelectStyleButton>
-              </NoStyleSelected>
-            )}
-          </OBSSection>
         )}
       </MainContent>
     </DashboardContainer>
@@ -454,163 +376,6 @@ const MessageText = styled.span`
 const MessageTime = styled.span`
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.8rem;
-`;
-
-const OBSSection = styled.div`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 2rem;
-  backdrop-filter: blur(20px);
-`;
-
-const OBSContent = styled.div`
-  /* OBS 內容樣式 */
-`;
-
-const OBSUrlSection = styled.div`
-  margin-bottom: 2rem;
-  
-  h4 {
-    color: white;
-    margin-bottom: 1rem;
-  }
-`;
-
-const OBSUrlContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-`;
-
-const OBSUrl = styled.div`
-  flex: 1;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 1rem;
-  color: #00ff00;
-  font-family: 'Courier New', monospace;
-  font-size: 0.9rem;
-  word-break: break-all;
-`;
-
-const CopyButton = styled.button`
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #218838;
-    transform: translateY(-2px);
-  }
-`;
-
-const PreviewButton = styled.button`
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: all 0.2s;
-
-  &:hover {
-    background: #5a6fd8;
-    transform: translateY(-2px);
-  }
-`;
-
-const OBSInstructions = styled.div`
-  margin-bottom: 2rem;
-  
-  h4 {
-    color: white;
-    margin-bottom: 1rem;
-  }
-`;
-
-const InstructionsList = styled.ol`
-  color: rgba(255, 255, 255, 0.8);
-  padding-left: 1.5rem;
-  line-height: 1.6;
-  
-  li {
-    margin-bottom: 0.5rem;
-  }
-  
-  code {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    color: #00ff00;
-  }
-`;
-
-const OBSTips = styled.div`
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 1.5rem;
-  
-  h4 {
-    color: white;
-    margin-bottom: 1rem;
-  }
-`;
-
-const TipsList = styled.ul`
-  color: rgba(255, 255, 255, 0.8);
-  padding-left: 1.5rem;
-  line-height: 1.6;
-  
-  li {
-    margin-bottom: 0.5rem;
-    
-    strong {
-      color: #667eea;
-    }
-  }
-`;
-
-const NoStyleSelected = styled.div`
-  text-align: center;
-  padding: 3rem;
-  
-  h4 {
-    color: white;
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 2rem;
-    line-height: 1.6;
-  }
-`;
-
-const SelectStyleButton = styled.button`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-  }
 `;
 
 export default EnhancedDashboard;
