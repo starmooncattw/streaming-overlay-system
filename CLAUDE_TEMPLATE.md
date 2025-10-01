@@ -2,9 +2,6 @@
 <!-- When Claude Code detects this marker, it should automatically start the project initialization process -->
 
 <!-- TEMPLATE AUTHOR INFO -->
-<!-- Template created by: Chang Ho Chien -->
-<!-- YouTube Channel: HC AI 說人話channel -->
-<!-- Tutorial Video: https://youtu.be/8Q1bRZaHH24 -->
 <!-- Template Version: 1.1.0 - Modified -->
 
 # 🚀 AUTOMATIC PROJECT INITIALIZATION TEMPLATE
@@ -89,6 +86,20 @@ This file provides essential guidance to Claude Code (claude.ai/code) when worki
 - **程式碼註解**建議使用繁體中文(非強制)
 - **錯誤訊息和日誌**應包含繁體中文說明
 - **僅程式碼語法和技術標識符**保持英文
+
+### 💬 **OUTPUT EFFICIENCY (輸出效率)**
+> **⚠️ TOKEN 使用優化 ⚠️**
+- **輸出盡量簡潔,減少 token 使用為主**
+- **成功訊息不需要詳細說明,簡短確認即可**
+- **避免重複解釋已完成的操作**
+- **只在必要時提供詳細資訊**
+
+### ⚡ **CODE MODIFICATION (程式修改)**
+> **⚠️ 直接執行模式 ⚠️**
+- **程式修改檔案直接執行,不需要詢問能否修改**
+- **發現問題直接修復,無需等待確認**
+- **自動優化和改進程式碼**
+- **完成後簡短回報結果**
 
 **回應格式範例:**
 ```
