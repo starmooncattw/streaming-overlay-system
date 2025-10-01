@@ -45,6 +45,14 @@ const App: React.FC = () => {
 
   // OBS Overlay 路由 - 完全獨立，無任何 UI 元素
   if (isOverlayRoute) {
+    // 設定 body 透明背景
+    React.useEffect(() => {
+      document.body.style.background = 'transparent';
+      return () => {
+        document.body.style.background = '';
+      };
+    }, []);
+
     return (
       <Routes>
         <Route path="/overlay/:streamerId" element={<OverlayView />} />

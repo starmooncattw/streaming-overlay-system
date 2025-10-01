@@ -176,7 +176,7 @@ const EnhancedDashboard: React.FC = () => {
                     <PreviewButton
                       onClick={() => window.open(generateOBSUrl(selectedStyle), '_blank')}
                     >
-                      預覽
+                      開啟
                     </PreviewButton>
                   </OBSUrlContainer>
                 </OBSUrlSection>
