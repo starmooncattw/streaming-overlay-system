@@ -15,7 +15,7 @@ const youtubeRoutes = require('./routes/youtube');
 
 // 中介軟體導入
 const errorHandler = require('./middleware/errorHandler');
-const rateLimiter = require('./middleware/rateLimiter');
+const { basicRateLimit } = require('./middleware/rateLimiter');
 
 // Socket.IO 設定
 const { createServer } = require('http');
@@ -66,7 +66,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // 速率限制
-app.use('/api/', rateLimiter);
+app.use('/api/', basicRateLimit);
 
 // 靜態文件服務 (生產環境)
 if (process.env.NODE_ENV === 'production') {
