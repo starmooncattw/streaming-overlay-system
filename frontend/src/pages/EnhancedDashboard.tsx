@@ -149,7 +149,8 @@ const EnhancedDashboard: React.FC = () => {
         )}
 
         {activeTab === 'test' && (
-          <TestMessageSender 
+          <TestMessageSender
+            userId={user.uid}
             onSendMessage={handleTestMessage}
             overlayUrl={selectedStyle ? generateOBSUrl(selectedStyle) : undefined}
           />

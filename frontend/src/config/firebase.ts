@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics } from 'firebase/analytics';
+import { getDatabase } from 'firebase/database';
 
 // 檢查必要的環境變數
 const requiredEnvVars = [
@@ -46,6 +47,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const realtimeDb = getDatabase(app);
 
 // 分析服務 (僅在生產環境)
 export const analytics = typeof window !== 'undefined' && process.env.NODE_ENV === 'production' 

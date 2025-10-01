@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChatStyle, ChatMessage } from '../types/style';
 import { styleService } from '../services/styleService';
+import { messageService } from '../services/messageService';
 
 const OverlayView: React.FC = () => {
   const { streamerId } = useParams<{ streamerId: string }>();
@@ -15,23 +16,24 @@ const OverlayView: React.FC = () => {
 
   useEffect(() => {
     loadStyle();
-    // 添加測試訊息
-    addTestMessages();
-    
-    // 模擬接收新訊息
-    const interval = setInterval(() => {
-      addRandomTestMessage();
-    }, 5000);
 
-    return () => clearInterval(interval);
-  }, [styleId]);
+    // 如果有 streamerId，訂閱即時訊息
+    if (streamerId) {
+      const unsubscribe = messageService.subscribeToMessages(streamerId, (newMessages) => {
+        // 只保留最近 10 條訊息
+        setMessages(newMessages.slice(-10));
+      });
+
+      return () => unsubscribe();
+    }
+  }, [styleId, streamerId]);
 
   const loadStyle = async () => {
     if (!styleId) {
       setLoading(false);
       return;
     }
-    
+
     try {
       const styleData = await styleService.getStyleById(styleId);
       setStyle(styleData);
@@ -40,60 +42,6 @@ const OverlayView: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-  
-  useEffect(() => {
-    loadStyle();
-  }, [styleId]);
-
-  const addTestMessages = () => {
-    const testMessages: ChatMessage[] = [
-      {
-        id: '1',
-        username: '觀眾A',
-        message: '哈囉！直播開始了嗎？',
-        timestamp: new Date(),
-        platform: 'youtube'
-      },
-      {
-        id: '2',
-        username: '粉絲B',
-        message: '今天要玩什麼遊戲呢？',
-        timestamp: new Date(),
-        platform: 'twitch'
-      }
-    ];
-    setMessages(testMessages);
-  };
-
-  const addRandomTestMessage = () => {
-    const randomMessages = [
-      '太精彩了！',
-      '666666',
-      '主播加油！',
-      '這個操作太神了',
-      '笑死我了 XD',
-      '求攻略',
-      '第一次看直播',
-      '訂閱了！',
-      '什麼時候下播？',
-      '音量可以大聲一點嗎？'
-    ];
-    
-    const randomUsernames = [
-      '遊戲高手', '路人甲', '夜貓子', '學生黨', '上班族', 
-      '遊戲新手', '老粉絲', '路過的', '好奇寶寶', '支持者'
-    ];
-
-    const newMessage: ChatMessage = {
-      id: Date.now().toString(),
-      username: randomUsernames[Math.floor(Math.random() * randomUsernames.length)],
-      message: randomMessages[Math.floor(Math.random() * randomMessages.length)],
-      timestamp: new Date(),
-      platform: Math.random() > 0.5 ? 'youtube' : 'twitch'
-    };
-
-    setMessages(prev => [...prev.slice(-9), newMessage]); // 保持最多10條訊息
   };
 
   const generateMessageStyle = (style: ChatStyle) => {

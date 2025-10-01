@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ChatMessage } from '../../types/style';
+import { messageService } from '../../services/messageService';
 import toast from 'react-hot-toast';
 
 interface TestMessageSenderProps {
+  userId: string;
   onSendMessage?: (message: ChatMessage) => void;
   overlayUrl?: string;
 }
 
-const TestMessageSender: React.FC<TestMessageSenderProps> = ({ 
-  onSendMessage, 
-  overlayUrl 
+const TestMessageSender: React.FC<TestMessageSenderProps> = ({
+  userId,
+  onSendMessage,
+  overlayUrl
 }) => {
   const [username, setUsername] = useState('測試用戶');
   const [message, setMessage] = useState('');
@@ -34,7 +37,7 @@ const TestMessageSender: React.FC<TestMessageSenderProps> = ({
     '遊戲新手', '老粉絲', '路過的', '好奇寶寶', '支持者'
   ];
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!message.trim()) {
       toast.error('請輸入訊息內容');
       return;
@@ -48,34 +51,51 @@ const TestMessageSender: React.FC<TestMessageSenderProps> = ({
       platform
     };
 
-    onSendMessage?.(testMessage);
-    toast.success('測試訊息已發送！');
-    setMessage(''); // 清空訊息框
+    try {
+      // 發送到 Firebase
+      await messageService.sendMessage(userId, testMessage);
+
+      // 同時觸發本地回調
+      onSendMessage?.(testMessage);
+
+      toast.success('測試訊息已發送！');
+      setMessage(''); // 清空訊息框
+    } catch (error) {
+      console.error('發送訊息失敗:', error);
+      toast.error('發送訊息失敗，請稍後再試');
+    }
   };
 
   const handleQuickMessage = (msg: string) => {
     setMessage(msg);
   };
 
-  const handleRandomMessage = () => {
+  const handleRandomMessage = async () => {
     const randomMsg = predefinedMessages[Math.floor(Math.random() * predefinedMessages.length)];
     const randomUser = predefinedUsernames[Math.floor(Math.random() * predefinedUsernames.length)];
-    
+    const randomPlatform = Math.random() > 0.5 ? 'youtube' : 'twitch';
+
     setUsername(randomUser);
     setMessage(randomMsg);
-    
+
     // 自動發送
-    setTimeout(() => {
+    setTimeout(async () => {
       const testMessage: ChatMessage = {
         id: Date.now().toString(),
         username: randomUser,
         message: randomMsg,
         timestamp: new Date(),
-        platform: Math.random() > 0.5 ? 'youtube' : 'twitch'
+        platform: randomPlatform
       };
 
-      onSendMessage?.(testMessage);
-      toast.success('隨機測試訊息已發送！');
+      try {
+        await messageService.sendMessage(userId, testMessage);
+        onSendMessage?.(testMessage);
+        toast.success('隨機測試訊息已發送！');
+      } catch (error) {
+        console.error('發送訊息失敗:', error);
+        toast.error('發送訊息失敗');
+      }
     }, 100);
   };
 

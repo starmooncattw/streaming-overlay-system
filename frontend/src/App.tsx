@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { User } from 'firebase/auth';
 
@@ -21,9 +21,13 @@ import './App.css';
 
 const App: React.FC = () => {
   const { user, profile, initializing, isAuthenticated } = useFirebaseAuth();
+  const location = useLocation();
 
-  // 如果正在初始化，顯示載入畫面
-  if (initializing) {
+  // 檢查是否為 overlay 路由
+  const isOverlayRoute = location.pathname.startsWith('/overlay');
+
+  // 如果正在初始化,顯示載入畫面 (但 overlay 路由除外)
+  if (initializing && !isOverlayRoute) {
     return (
       <div className="app-loading" style={{
         minHeight: '100vh',
@@ -40,6 +44,16 @@ const App: React.FC = () => {
     );
   }
 
+  // OBS Overlay 路由 - 完全獨立，無任何 UI 元素
+  if (isOverlayRoute) {
+    return (
+      <Routes>
+        <Route path="/overlay/:streamerId" element={<OverlayView />} />
+      </Routes>
+    );
+  }
+
+  // 其他所有路由都包含完整的 UI
   return (
     <div className="App">
       {/* Toast 通知 */}
@@ -64,32 +78,29 @@ const App: React.FC = () => {
       <div style={{ paddingTop: isAuthenticated ? '70px' : '0' }}>
         <Routes>
           {/* Google 登入頁面 */}
-          <Route 
-            path="/login" 
-            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <GoogleLogin />} 
+          <Route
+            path="/login"
+            element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <GoogleLogin />}
           />
-          
-          {/* OBS 疊加視圖 - 不需要認證 */}
-          <Route path="/overlay/:streamerId" element={<OverlayView />} />
-          
+
           {/* 受保護的路由 */}
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <EnhancedDashboard />
             </ProtectedRoute>
           } />
-          
+
           {/* 預設重定向 - 只在非初始化狀態下進行 */}
-          <Route 
-            path="/" 
-            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
+          <Route
+            path="/"
+            element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
           />
-          
+
           {/* 404 處理 */}
           <Route path="*" element={
-            <div style={{ 
-              padding: '2rem', 
-              textAlign: 'center', 
+            <div style={{
+              padding: '2rem',
+              textAlign: 'center',
               color: 'white',
               background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
               minHeight: '100vh',
