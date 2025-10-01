@@ -14,7 +14,7 @@ const healthRoutes = require('./routes/health');
 const youtubeRoutes = require('./routes/youtube');
 
 // 中介軟體導入
-const errorHandler = require('./middleware/errorHandler');
+const { errorHandler } = require('./middleware/errorHandler');
 const { basicRateLimit } = require('./middleware/rateLimiter');
 
 // Socket.IO 設定
