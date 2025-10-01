@@ -54,7 +54,37 @@ class StyleService {
   // 創建新樣式
   async createStyle(userId: string, styleData: Partial<ChatStyle>): Promise<ChatStyle> {
     try {
+      // 預設值
+      const defaultStyle: Omit<ChatStyle, 'id' | 'userId' | 'createdAt' | 'updatedAt'> = {
+        name: '未命名樣式',
+        displayMode: 'horizontal',
+        font: {
+          family: 'Arial',
+          size: 16,
+          weight: 'normal',
+          color: '#ffffff'
+        },
+        background: {
+          color: '#000000',
+          opacity: 0.7,
+          blur: 0
+        },
+        animation: {
+          enabled: true,
+          type: 'fade',
+          duration: 500
+        },
+        layout: {
+          padding: 10,
+          borderRadius: 5,
+          alignment: 'left',
+          maxWidth: 400,
+          margin: 10
+        }
+      };
+
       const newStyle = {
+        ...defaultStyle,
         ...styleData,
         userId,
         createdAt: serverTimestamp(),
@@ -62,14 +92,13 @@ class StyleService {
       };
 
       const docRef = await addDoc(collection(db, this.collectionName), newStyle);
-      
-      // 返回時使用當前時間作為預設值
+
+      // 返回完整的樣式物件
       return {
+        ...defaultStyle,
+        ...styleData,
         id: docRef.id,
         userId,
-        name: styleData.name || '未命名樣式',
-        displayMode: styleData.displayMode || 'horizontal',
-        ...styleData,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now()
       } as ChatStyle;

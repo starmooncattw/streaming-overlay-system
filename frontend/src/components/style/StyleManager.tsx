@@ -114,7 +114,7 @@ const StyleManager: React.FC<StyleManagerProps> = ({ user, onStyleSelect }) => {
             <StyleInfo>
               <StyleName>{style.name}</StyleName>
               <StyleMeta>
-                {style.displayMode} • {style.font.size}px • {style.font.family}
+                {style.displayMode} • {style.font?.size || 16}px • {style.font?.family || 'Arial'}
               </StyleMeta>
             </StyleInfo>
             
@@ -241,22 +241,25 @@ const StylePreview = styled.div`
 `;
 
 const PreviewMessage = styled.div<{ style: ChatStyle }>`
-  font-family: ${(props) => props.style.font.family};
-  font-size: ${(props) => props.style.font.size}px;
-  font-weight: ${(props) => props.style.font.weight};
-  color: ${(props) => props.style.font.color};
+  font-family: ${(props) => props.style.font?.family || 'Arial'};
+  font-size: ${(props) => props.style.font?.size || 16}px;
+  font-weight: ${(props) => props.style.font?.weight || 'normal'};
+  color: ${(props) => props.style.font?.color || '#ffffff'};
   background-color: ${(props) => {
-    const opacity = Math.round(props.style.background.opacity * 255)
+    const bgColor = props.style.background?.color || '#000000';
+    const bgOpacity = props.style.background?.opacity ?? 0.7;
+    const opacity = Math.round(bgOpacity * 255)
       .toString(16)
       .padStart(2, "0");
-    return `${props.style.background.color}${opacity}`;
+    return `${bgColor}${opacity}`;
   }};
-  padding: ${(props) => props.style.layout.padding}px;
-  border-radius: ${(props) => props.style.layout.borderRadius}px;
-  text-align: ${(props) => props.style.layout.alignment};
-  backdrop-filter: ${(props) => 
-    props.style.background.blur > 0 ? `blur(${props.style.background.blur}px)` : "none"
-  };
+  padding: ${(props) => props.style.layout?.padding || 10}px;
+  border-radius: ${(props) => props.style.layout?.borderRadius || 5}px;
+  text-align: ${(props) => props.style.layout?.alignment || 'left'};
+  backdrop-filter: ${(props) => {
+    const blur = props.style.background?.blur || 0;
+    return blur > 0 ? `blur(${blur}px)` : "none";
+  }};
 `;
 
 const Username = styled.span`
