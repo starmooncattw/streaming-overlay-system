@@ -9,7 +9,6 @@ import { store } from './store/store';
 import './index.css';
 
 // Firebase 初始化
-import './services/firebase';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

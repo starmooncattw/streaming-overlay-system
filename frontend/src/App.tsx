@@ -25,12 +25,21 @@ const App: React.FC = () => {
   // 檢查是否為 overlay 路由
   const isOverlayRoute = location.pathname.startsWith('/overlay');
 
-  // 設定 body 透明背景 (針對 overlay 路由)
+  // 設定 body 和 html 透明背景 (針對 overlay 路由)
   React.useEffect(() => {
     if (isOverlayRoute) {
       document.body.style.background = 'transparent';
+      document.documentElement.style.background = 'transparent';
+      const appDiv = document.querySelector('.App') as HTMLElement;
+      if (appDiv) {
+        appDiv.style.background = 'transparent';
+      }
       return () => {
         document.body.style.background = '';
+        document.documentElement.style.background = '';
+        if (appDiv) {
+          appDiv.style.background = '';
+        }
       };
     }
   }, [isOverlayRoute]);
