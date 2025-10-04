@@ -20,6 +20,7 @@ const YouTubeConnect: React.FC = () => {
     } else {
       setIsAuthenticated(youtubeService.isAuthenticated());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const handleOAuthCallback = async (code: string) => {

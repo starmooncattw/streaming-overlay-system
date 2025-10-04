@@ -48,9 +48,11 @@ class YouTubeService {
       });
 
       this.credentials = response.data.credentials;
-      this.saveCredentials(this.credentials);
-
-      return this.credentials;
+      if (this.credentials) {
+        this.saveCredentials(this.credentials);
+        return this.credentials;
+      }
+      throw new Error('未獲取到憑證');
     } catch (error) {
       console.error('交換令牌失敗:', error);
       throw error;
@@ -72,9 +74,11 @@ class YouTubeService {
       });
 
       this.credentials = response.data.credentials;
-      this.saveCredentials(this.credentials);
-
-      return this.credentials;
+      if (this.credentials) {
+        this.saveCredentials(this.credentials);
+        return this.credentials;
+      }
+      throw new Error('未獲取到憑證');
     } catch (error) {
       console.error('刷新令牌失敗:', error);
       this.clearCredentials();

@@ -32,6 +32,7 @@ const YouTubeControl: React.FC = () => {
 
     // 檢查是否有活動的爬蟲
     checkActiveCrawler();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   const checkActiveCrawler = async () => {

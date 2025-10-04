@@ -6,6 +6,7 @@
 - 簡潔輸出,減少 token
 - 直接執行,無需詢問
 - 發現問題直接修復
+- **開發情況確認**: 使用 `git log` 查看提交記錄、變更統計、開發進度
 - **開發流程**: 本地修改 → GitHub 推送 → Cloud Shell 拉取同步 → Cloud Shell 測試執行
 
 ### 🌐 **LANGUAGE REQUIREMENT (語言要求)**
