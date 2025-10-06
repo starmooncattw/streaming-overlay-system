@@ -103,4 +103,5 @@ Thumbs.db
 
 # Temporary files
 tmp/
-temp/
+temp/backend/temp
+frontend/temp-proxy.json
