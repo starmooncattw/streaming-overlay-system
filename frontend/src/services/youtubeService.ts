@@ -1,6 +1,35 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+// 使用相對路徑,讓 proxy 處理轉發
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || '',
+  withCredentials: true,
+  timeout: 10000,
+});
+
+// 請求攔截器
+api.interceptors.request.use(
+  (config) => {
+    console.log('📤 API 請求:', config.method?.toUpperCase(), config.url);
+    return config;
+  },
+  (error) => {
+    console.error('❌ 請求錯誤:', error);
+    return Promise.reject(error);
+  }
+);
+
+// 響應攔截器
+api.interceptors.response.use(
+  (response) => {
+    console.log('✅ API 響應:', response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('❌ 響應錯誤:', error.config?.url, error.message);
+    return Promise.reject(error);
+  }
+);
 
 export interface YouTubeCredentials {
   access_token: string;
@@ -30,7 +59,7 @@ class YouTubeService {
    */
   async getAuthUrl(): Promise<string> {
     try {
-      const response = await axios.get(`${API_URL}/api/youtube/auth/url`);
+      const response = await api.get('/api/youtube/auth/url');
       return response.data.authUrl;
     } catch (error) {
       console.error('獲取授權 URL 失敗:', error);
@@ -43,7 +72,7 @@ class YouTubeService {
    */
   async exchangeCode(code: string): Promise<YouTubeCredentials> {
     try {
-      const response = await axios.get(`${API_URL}/api/youtube/auth/callback`, {
+      const response = await api.get('/api/youtube/auth/callback', {
         params: { code }
       });
 
@@ -69,7 +98,7 @@ class YouTubeService {
         throw new Error('沒有 refresh token');
       }
 
-      const response = await axios.post(`${API_URL}/api/youtube/auth/refresh`, {
+      const response = await api.post('/api/youtube/auth/refresh', {
         refresh_token: credentials.refresh_token
       });
 
@@ -96,7 +125,7 @@ class YouTubeService {
         throw new Error('未認證');
       }
 
-      const response = await axios.post(`${API_URL}/api/youtube/search`, {
+      const response = await api.post('/api/youtube/search', {
         query,
         credentials,
         maxResults
@@ -119,7 +148,7 @@ class YouTubeService {
         throw new Error('未認證');
       }
 
-      const response = await axios.post(`${API_URL}/api/youtube/video/${videoId}`, {
+      const response = await api.post(`/api/youtube/video/${videoId}`, {
         credentials
       });
 
@@ -140,7 +169,7 @@ class YouTubeService {
         throw new Error('未認證');
       }
 
-      await axios.post(`${API_URL}/api/youtube/crawler/start`, {
+      await api.post('/api/youtube/crawler/start', {
         streamerId,
         videoId,
         credentials
@@ -156,7 +185,7 @@ class YouTubeService {
    */
   async stopCrawler(streamerId: string): Promise<void> {
     try {
-      await axios.post(`${API_URL}/api/youtube/crawler/stop`, {
+      await api.post('/api/youtube/crawler/stop', {
         streamerId
       });
     } catch (error) {
@@ -170,7 +199,7 @@ class YouTubeService {
    */
   async getCrawlerStatus(streamerId: string): Promise<any> {
     try {
-      const response = await axios.get(`${API_URL}/api/youtube/crawler/status/${streamerId}`);
+      const response = await api.get(`/api/youtube/crawler/status/${streamerId}`);
       return response.data.stats;
     } catch (error) {
       console.error('獲取爬蟲狀態失敗:', error);

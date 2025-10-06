@@ -31,39 +31,41 @@
 | 系統管理 | ❌ | 0% |
 | 協助功能系統 | ❌ | 0% |
 
-## 🧪 測試狀態 (2025-01-05)
+## 🧪 開發進度 (2025-10-07)
 
 ### ✅ 已完成
-- YouTube OAuth 憑證建立
-- Cloud Shell 服務部署 (前端 3001, 後端 5000)
-- 環境變數設定完成
-- TypeScript 錯誤修復
+- 移除 README 敏感憑證 (YouTube Client ID/Secret)
+- 修復 ESLint 警告 (未使用變數/import)
+- 重構 youtubeService.ts 使用相對路徑配合 proxy
 
-### ⚠️ 待解決
-**問題**: 前端快取未更新，仍請求 `localhost:5000`
-**解決方案**:
+### ⚠️ 待處理 - Cloud Shell CORS 問題
+**現況**: 後端 API 正常 (`curl localhost:5000/health` ✅)，但前端無法透過公開 URL 訪問後端
+
+**原因**: Cloud Shell 不同 port 間的跨域限制
+
+**解決方案**: 使用 React Proxy
 ```bash
+# Cloud Shell 執行:
 cd ~/streaming-overlay-system/frontend
+# 1. 設定 proxy
+node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('package.json','utf8'));p.proxy='http://localhost:5000';fs.writeFileSync('package.json',JSON.stringify(p,null,2));"
+# 2. 更新 .env
+echo "REACT_APP_API_URL=" > .env
+cat .env.example | grep FIREBASE >> .env
+# 3. 重啟
 pkill -f react-scripts && rm -rf .cache node_modules/.cache
-nohup npm start > frontend.log 2>&1 &
-# 瀏覽器: F12 > Application > Clear storage
+PORT=3001 nohup npm start > frontend.log 2>&1 &
 ```
 
-### 🔑 關鍵設定檔
-**backend/.env**:
-```
-YOUTUBE_CLIENT_ID=你的_CLIENT_ID
-YOUTUBE_CLIENT_SECRET=你的_CLIENT_SECRET
-YOUTUBE_REDIRECT_URI=你的_REDIRECT_URI
-FRONTEND_URL=你的_FRONTEND_URL
-```
+### 📝 本次變更
+- `frontend/src/services/youtubeService.ts` - 已改用 axios 實例 + 相對路徑
+- 本機修改完成，稍後統一推送 GitHub
 
-**frontend/.env**:
-```
-REACT_APP_API_URL=你的_API_URL
-```
+### 🔑 環境設定
+**本機**: 無 `.env` 檔案 (僅 `.env.example`)
+**Cloud Shell**: 已設定完整 `.env` (backend/frontend 皆有)
 
-💡 **注意**: 請參考 `.env.example` 檔案設定實際的環境變數
+參考 `.env.example` 設定環境變數
 
 ## 🔧 技術棧
 - React 18 + TypeScript + Firebase
