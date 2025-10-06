@@ -31,8 +31,39 @@
 | 系統管理 | ❌ | 0% |
 | 協助功能系統 | ❌ | 0% |
 
-**執行至**:  
-**待完成**: Google Cloud 設定、完整測試
+## 🧪 測試狀態 (2025-01-05)
+
+### ✅ 已完成
+- YouTube OAuth 憑證建立
+- Cloud Shell 服務部署 (前端 3001, 後端 5000)
+- 環境變數設定完成
+- TypeScript 錯誤修復
+
+### ⚠️ 待解決
+**問題**: 前端快取未更新，仍請求 `localhost:5000`
+**解決方案**:
+```bash
+cd ~/streaming-overlay-system/frontend
+pkill -f react-scripts && rm -rf .cache node_modules/.cache
+nohup npm start > frontend.log 2>&1 &
+# 瀏覽器: F12 > Application > Clear storage
+```
+
+### 🔑 關鍵設定檔
+**backend/.env**:
+```
+YOUTUBE_CLIENT_ID=你的_CLIENT_ID
+YOUTUBE_CLIENT_SECRET=你的_CLIENT_SECRET
+YOUTUBE_REDIRECT_URI=你的_REDIRECT_URI
+FRONTEND_URL=你的_FRONTEND_URL
+```
+
+**frontend/.env**:
+```
+REACT_APP_API_URL=你的_API_URL
+```
+
+💡 **注意**: 請參考 `.env.example` 檔案設定實際的環境變數
 
 ## 🔧 技術棧
 - React 18 + TypeScript + Firebase

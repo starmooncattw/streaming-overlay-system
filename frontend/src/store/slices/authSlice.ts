@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { authService } from '../../services/authService';
-import { firebaseAuthService, RegisterData, LoginData } from '../../services/firebaseAuthService';
 
 // 類型定義
 export interface User {

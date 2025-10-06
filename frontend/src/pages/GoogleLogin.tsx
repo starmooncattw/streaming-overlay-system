@@ -125,7 +125,7 @@ const GoogleLogin: React.FC = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const { user, profile } = await googleAuthService.signInWithGoogle();
+      const { profile } = await googleAuthService.signInWithGoogle();
       
       toast.success(`歡迎回來，${profile.displayName}！`);
       

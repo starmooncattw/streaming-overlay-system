@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { firebaseAuthService, RegisterData, LoginData, UserProfile } from '../../services/firebaseAuthService';
-import { User } from 'firebase/auth';
 
 // 用戶狀態介面
 export interface FirebaseUser {
