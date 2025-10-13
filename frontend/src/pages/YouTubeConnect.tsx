@@ -11,13 +11,15 @@ const YouTubeConnect: React.FC = () => {
   const { user } = useFirebaseAuth();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [processedCode, setProcessedCode] = useState<string | null>(null);
 
   useEffect(() => {
     // 檢查 OAuth 回調
     const code = searchParams.get('code');
-    if (code) {
+    if (code && code !== processedCode) {
+      setProcessedCode(code);
       handleOAuthCallback(code);
-    } else {
+    } else if (!code) {
       setIsAuthenticated(youtubeService.isAuthenticated());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
